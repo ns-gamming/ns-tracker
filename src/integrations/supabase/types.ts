@@ -103,6 +103,51 @@ export type Database = {
           },
         ]
       }
+      assets: {
+        Row: {
+          created_at: string | null
+          currency: string | null
+          description: string | null
+          id: string
+          location: string | null
+          metadata: Json | null
+          name: string
+          purchase_date: string | null
+          type: string
+          updated_at: string | null
+          user_id: string
+          value: number
+        }
+        Insert: {
+          created_at?: string | null
+          currency?: string | null
+          description?: string | null
+          id?: string
+          location?: string | null
+          metadata?: Json | null
+          name: string
+          purchase_date?: string | null
+          type: string
+          updated_at?: string | null
+          user_id: string
+          value: number
+        }
+        Update: {
+          created_at?: string | null
+          currency?: string | null
+          description?: string | null
+          id?: string
+          location?: string | null
+          metadata?: Json | null
+          name?: string
+          purchase_date?: string | null
+          type?: string
+          updated_at?: string | null
+          user_id?: string
+          value?: number
+        }
+        Relationships: []
+      }
       budgets: {
         Row: {
           amount: number
@@ -202,6 +247,154 @@ export type Database = {
           },
         ]
       }
+      chat_conversations: {
+        Row: {
+          created_at: string | null
+          id: string
+          title: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          title?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          title?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      chat_messages: {
+        Row: {
+          content: string
+          conversation_id: string
+          created_at: string | null
+          id: string
+          role: string
+        }
+        Insert: {
+          content: string
+          conversation_id: string
+          created_at?: string | null
+          id?: string
+          role: string
+        }
+        Update: {
+          content?: string
+          conversation_id?: string
+          created_at?: string | null
+          id?: string
+          role?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chat_messages_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "chat_conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      connected_accounts: {
+        Row: {
+          account_id: string | null
+          account_number: string | null
+          created_at: string | null
+          id: string
+          last_synced: string | null
+          metadata: Json | null
+          provider: string
+          status: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          account_id?: string | null
+          account_number?: string | null
+          created_at?: string | null
+          id?: string
+          last_synced?: string | null
+          metadata?: Json | null
+          provider: string
+          status?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          account_id?: string | null
+          account_number?: string | null
+          created_at?: string | null
+          id?: string
+          last_synced?: string | null
+          metadata?: Json | null
+          provider?: string
+          status?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "connected_accounts_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "accounts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      crypto: {
+        Row: {
+          created_at: string | null
+          currency: string | null
+          current_price: number | null
+          id: string
+          name: string
+          platform: string | null
+          purchase_price: number
+          quantity: number
+          symbol: string
+          updated_at: string | null
+          user_id: string
+          wallet_address: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          currency?: string | null
+          current_price?: number | null
+          id?: string
+          name: string
+          platform?: string | null
+          purchase_price: number
+          quantity: number
+          symbol: string
+          updated_at?: string | null
+          user_id: string
+          wallet_address?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          currency?: string | null
+          current_price?: number | null
+          id?: string
+          name?: string
+          platform?: string | null
+          purchase_price?: number
+          quantity?: number
+          symbol?: string
+          updated_at?: string | null
+          user_id?: string
+          wallet_address?: string | null
+        }
+        Relationships: []
+      }
       exports: {
         Row: {
           completed_at: string | null
@@ -242,6 +435,45 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      family_members: {
+        Row: {
+          avatar_url: string | null
+          created_at: string | null
+          date_of_birth: string | null
+          id: string
+          is_alive: boolean | null
+          metadata: Json | null
+          name: string
+          relationship: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string | null
+          date_of_birth?: string | null
+          id?: string
+          is_alive?: boolean | null
+          metadata?: Json | null
+          name: string
+          relationship: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string | null
+          date_of_birth?: string | null
+          id?: string
+          is_alive?: boolean | null
+          metadata?: Json | null
+          name?: string
+          relationship?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
       }
       goals: {
         Row: {
@@ -368,6 +600,48 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      stocks: {
+        Row: {
+          created_at: string | null
+          currency: string | null
+          current_price: number | null
+          exchange: string | null
+          id: string
+          name: string
+          purchase_price: number
+          quantity: number
+          symbol: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          currency?: string | null
+          current_price?: number | null
+          exchange?: string | null
+          id?: string
+          name: string
+          purchase_price: number
+          quantity: number
+          symbol: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          currency?: string | null
+          current_price?: number | null
+          exchange?: string | null
+          id?: string
+          name?: string
+          purchase_price?: number
+          quantity?: number
+          symbol?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
       }
       transactions: {
         Row: {

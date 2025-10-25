@@ -5,8 +5,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
 import { User } from "@supabase/supabase-js";
-import { TrendingUp, LogOut, Plus, Moon, Sun, RefreshCw } from "lucide-react";
+import { TrendingUp, LogOut, Plus, Moon, Sun, RefreshCw, MessageSquare, Users, Link as LinkIcon } from "lucide-react";
 import { AddTransactionDialog } from "@/components/AddTransactionDialog";
+import { BudgetDialog } from "@/components/BudgetDialog";
+import { FinancialChatbot } from "@/components/FinancialChatbot";
 import { useDashboardData } from "@/hooks/useDashboardData";
 import { FinancialCharts } from "@/components/FinancialCharts";
 import { RecentTransactions } from "@/components/RecentTransactions";
@@ -15,6 +17,8 @@ const Dashboard = () => {
   const [user, setUser] = useState<User | null>(null);
   const [theme, setTheme] = useState<"light" | "dark">("light");
   const [showAddTransaction, setShowAddTransaction] = useState(false);
+  const [showBudgetDialog, setShowBudgetDialog] = useState(false);
+  const [showChatbot, setShowChatbot] = useState(false);
   const navigate = useNavigate();
   const { data: dashboardData, isLoading, refetch } = useDashboardData();
 
@@ -78,6 +82,12 @@ const Dashboard = () => {
               </div>
             </div>
             <div className="flex items-center gap-2">
+              <Button variant="ghost" size="icon" onClick={() => setShowChatbot(true)} title="AI Financial Advisor">
+                <MessageSquare className="h-5 w-5" />
+              </Button>
+              <Button variant="ghost" size="icon" onClick={() => navigate("/family")} title="Family Members">
+                <Users className="h-5 w-5" />
+              </Button>
               <Button variant="ghost" size="icon" onClick={toggleTheme}>
                 {theme === "light" ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />}
               </Button>
@@ -172,11 +182,16 @@ const Dashboard = () => {
               <Plus className="h-4 w-4" />
               Add Transaction
             </Button>
-            <Button variant="outline" className="gap-2" onClick={() => toast.info("Coming soon!")}>
-              Connect Account
+            <Button variant="outline" className="gap-2" onClick={() => toast.info("Bank connection coming soon!")}>
+              <LinkIcon className="h-4 w-4" />
+              Connect Bank Account
             </Button>
-            <Button variant="outline" className="gap-2" onClick={() => toast.info("Coming soon!")}>
+            <Button variant="outline" className="gap-2" onClick={() => setShowBudgetDialog(true)}>
               Set Budget
+            </Button>
+            <Button variant="outline" className="gap-2" onClick={() => navigate("/family")}>
+              <Users className="h-4 w-4" />
+              Manage Family
             </Button>
           </CardContent>
         </Card>
@@ -185,6 +200,17 @@ const Dashboard = () => {
           open={showAddTransaction}
           onOpenChange={setShowAddTransaction}
           onSuccess={() => refetch()}
+        />
+
+        <BudgetDialog
+          open={showBudgetDialog}
+          onOpenChange={setShowBudgetDialog}
+          onSuccess={() => refetch()}
+        />
+
+        <FinancialChatbot
+          open={showChatbot}
+          onOpenChange={setShowChatbot}
         />
       </main>
     </div>

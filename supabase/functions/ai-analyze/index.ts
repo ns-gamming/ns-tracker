@@ -189,7 +189,7 @@ USER PAYLOAD: ${JSON.stringify(geminiPayload)}`
   } catch (error) {
     console.error('Error in AI analyze function:', error);
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ error: error instanceof Error ? error.message : 'Unknown error' }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }
