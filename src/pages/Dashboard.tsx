@@ -5,12 +5,18 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
 import { User } from "@supabase/supabase-js";
-import { TrendingUp, LogOut, Plus, Moon, Sun } from "lucide-react";
+import { TrendingUp, LogOut, Plus, Moon, Sun, RefreshCw } from "lucide-react";
+import { AddTransactionDialog } from "@/components/AddTransactionDialog";
+import { useDashboardData } from "@/hooks/useDashboardData";
+import { FinancialCharts } from "@/components/FinancialCharts";
+import { RecentTransactions } from "@/components/RecentTransactions";
 
 const Dashboard = () => {
   const [user, setUser] = useState<User | null>(null);
   const [theme, setTheme] = useState<"light" | "dark">("light");
+  const [showAddTransaction, setShowAddTransaction] = useState(false);
   const navigate = useNavigate();
+  const { data: dashboardData, isLoading, refetch } = useDashboardData();
 
   useEffect(() => {
     // Check authentication
@@ -85,26 +91,35 @@ const Dashboard = () => {
       </header>
 
       <main className="container mx-auto px-4 py-8">
-        <div className="mb-8">
-          <h2 className="text-3xl font-bold mb-2">Welcome back!</h2>
-          <p className="text-muted-foreground">Here's your financial overview</p>
+        <div className="mb-8 flex items-center justify-between">
+          <div>
+            <h2 className="text-3xl font-bold mb-2">Welcome back!</h2>
+            <p className="text-muted-foreground">Here's your financial overview</p>
+          </div>
+          <Button variant="outline" size="icon" onClick={() => refetch()} disabled={isLoading}>
+            <RefreshCw className={`h-4 w-4 ${isLoading ? "animate-spin" : ""}`} />
+          </Button>
         </div>
 
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 mb-8">
           <Card className="shadow-card">
             <CardHeader className="pb-3">
               <CardDescription>Net Worth</CardDescription>
-              <CardTitle className="text-3xl tabular-nums">₹0.00</CardTitle>
+              <CardTitle className="text-3xl tabular-nums">
+                {isLoading ? "..." : `₹${(dashboardData?.netWorth || 0).toFixed(2)}`}
+              </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-xs text-muted-foreground">No transactions yet</p>
+              <p className="text-xs text-muted-foreground">Total balance</p>
             </CardContent>
           </Card>
 
           <Card className="shadow-card">
             <CardHeader className="pb-3">
               <CardDescription>Monthly Income</CardDescription>
-              <CardTitle className="text-3xl tabular-nums text-success">₹0.00</CardTitle>
+              <CardTitle className="text-3xl tabular-nums text-success">
+                {isLoading ? "..." : `₹${(dashboardData?.monthlyIncome || 0).toFixed(2)}`}
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-xs text-muted-foreground">This month</p>
@@ -114,7 +129,9 @@ const Dashboard = () => {
           <Card className="shadow-card">
             <CardHeader className="pb-3">
               <CardDescription>Monthly Expenses</CardDescription>
-              <CardTitle className="text-3xl tabular-nums text-destructive">₹0.00</CardTitle>
+              <CardTitle className="text-3xl tabular-nums text-destructive">
+                {isLoading ? "..." : `₹${(dashboardData?.monthlyExpenses || 0).toFixed(2)}`}
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-xs text-muted-foreground">This month</p>
@@ -124,7 +141,9 @@ const Dashboard = () => {
           <Card className="shadow-card">
             <CardHeader className="pb-3">
               <CardDescription>Savings Rate</CardDescription>
-              <CardTitle className="text-3xl tabular-nums">0%</CardTitle>
+              <CardTitle className="text-3xl tabular-nums">
+                {isLoading ? "..." : `${(dashboardData?.savingsRate || 0).toFixed(0)}%`}
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-xs text-muted-foreground">This month</p>
@@ -132,31 +151,41 @@ const Dashboard = () => {
           </Card>
         </div>
 
+        <div className="mb-8">
+          <FinancialCharts
+            monthlyTrend={dashboardData?.monthlyTrend}
+            categoryBreakdown={dashboardData?.categoryBreakdown}
+          />
+        </div>
+
+        <div className="mb-8">
+          <RecentTransactions transactions={dashboardData?.recentTransactions} />
+        </div>
+
         <Card className="shadow-card">
           <CardHeader>
             <CardTitle>Quick Actions</CardTitle>
-            <CardDescription>Get started with NS Tracker</CardDescription>
+            <CardDescription>Manage your finances</CardDescription>
           </CardHeader>
           <CardContent className="flex flex-wrap gap-4">
-            <Button className="gap-2">
+            <Button className="gap-2" onClick={() => setShowAddTransaction(true)}>
               <Plus className="h-4 w-4" />
               Add Transaction
             </Button>
-            <Button variant="outline" className="gap-2">
+            <Button variant="outline" className="gap-2" onClick={() => toast.info("Coming soon!")}>
               Connect Account
             </Button>
-            <Button variant="outline" className="gap-2">
+            <Button variant="outline" className="gap-2" onClick={() => toast.info("Coming soon!")}>
               Set Budget
             </Button>
           </CardContent>
         </Card>
 
-        <div className="mt-8 p-6 rounded-lg bg-muted/30 border border-border">
-          <h3 className="font-semibold mb-2">🎉 Your finance tracker is ready!</h3>
-          <p className="text-sm text-muted-foreground">
-            Database configured with RLS policies ✓ Authentication working ✓ Ready for transactions and AI insights
-          </p>
-        </div>
+        <AddTransactionDialog
+          open={showAddTransaction}
+          onOpenChange={setShowAddTransaction}
+          onSuccess={() => refetch()}
+        />
       </main>
     </div>
   );
