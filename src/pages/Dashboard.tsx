@@ -106,7 +106,7 @@ const Dashboard = () => {
             <CardHeader className="pb-3">
               <CardDescription>Net Worth</CardDescription>
               <CardTitle className="text-3xl tabular-nums">
-                {isLoading ? "..." : `₹${(dashboardData?.netWorth || 0).toFixed(2)}`}
+                {isLoading ? "..." : `₹${Number(dashboardData?.netWorth || 0).toFixed(2)}`}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -118,7 +118,7 @@ const Dashboard = () => {
             <CardHeader className="pb-3">
               <CardDescription>Monthly Income</CardDescription>
               <CardTitle className="text-3xl tabular-nums text-success">
-                {isLoading ? "..." : `₹${(dashboardData?.monthlyIncome || 0).toFixed(2)}`}
+                {isLoading ? "..." : `₹${Number(dashboardData?.monthlyIncome || 0).toFixed(2)}`}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -130,7 +130,7 @@ const Dashboard = () => {
             <CardHeader className="pb-3">
               <CardDescription>Monthly Expenses</CardDescription>
               <CardTitle className="text-3xl tabular-nums text-destructive">
-                {isLoading ? "..." : `₹${(dashboardData?.monthlyExpenses || 0).toFixed(2)}`}
+                {isLoading ? "..." : `₹${Number(dashboardData?.monthlyExpenses || 0).toFixed(2)}`}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -142,7 +142,7 @@ const Dashboard = () => {
             <CardHeader className="pb-3">
               <CardDescription>Savings Rate</CardDescription>
               <CardTitle className="text-3xl tabular-nums">
-                {isLoading ? "..." : `${(dashboardData?.savingsRate || 0).toFixed(0)}%`}
+                {isLoading ? "..." : `${Number(dashboardData?.savingsRate || 0).toFixed(0)}%`}
               </CardTitle>
             </CardHeader>
             <CardContent>
