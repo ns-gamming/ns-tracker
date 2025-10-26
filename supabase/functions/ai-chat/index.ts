@@ -56,21 +56,25 @@ serve(async (req) => {
       .eq("conversation_id", convId)
       .order("created_at", { ascending: true });
 
-    // Get user's financial data for context
-    const [transactions, budgets, goals] = await Promise.all([
-      supabase.from("transactions").select("*").eq("user_id", user.id).order("timestamp", { ascending: false }).limit(10),
+    const [transactions, budgets, goals, family] = await Promise.all([
+      supabase.from("transactions").select("*").eq("user_id", user.id).order("timestamp", { ascending: false }).limit(100),
       supabase.from("budgets").select("*").eq("user_id", user.id),
       supabase.from("goals").select("*").eq("user_id", user.id),
+      supabase.from("family_members").select("id, name, is_alive").eq("user_id", user.id),
     ]);
 
     const systemPrompt = `You are a helpful financial advisor assistant. You have access to the user's financial data and can provide personalized advice.
 
 Current Financial Context:
-- Recent Transactions: ${transactions.data?.length || 0} transactions
+- Recent Transactions: ${transactions.data?.length || 0} items (last 100)
 - Active Budgets: ${budgets.data?.length || 0} budgets
 - Financial Goals: ${goals.data?.length || 0} goals
+- Family Members: ${family.data?.length || 0} members
 
-Provide actionable financial advice, help detect spending patterns, suggest budgeting strategies, and assist with financial planning. Be concise and practical.`;
+Instructions:
+- Analyze spending and income patterns, calculate savings rate, and identify overspending categories.
+- Consider family_member_id on transactions to attribute expenses/income to the correct person; provide per-person tips.
+- Provide concise, practical, and actionable advice with simple calculations when useful.`;
 
     // Call Gemini API
     const geminiMessages = [
@@ -97,7 +101,7 @@ Provide actionable financial advice, help detect spending patterns, suggest budg
     );
 
     const data = await response.json();
-    const assistantMessage = data.candidates[0].content.parts[0].text;
+    const assistantMessage = data.candidates?.[0]?.content?.parts?.[0]?.text || "I'm here to help with your finances. Could you rephrase that?";
 
     // Save assistant response
     await supabase.from("chat_messages").insert({

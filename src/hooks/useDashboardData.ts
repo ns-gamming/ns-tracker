@@ -12,6 +12,7 @@ interface DashboardData {
     type: string;
     merchant: string;
     timestamp: string;
+    memberName?: string;
   }>;
   monthlyTrend: Array<{
     month: string;
@@ -21,6 +22,14 @@ interface DashboardData {
   categoryBreakdown: Array<{
     category: string;
     amount: number;
+  }>;
+  familySummary: Array<{
+    id: string;
+    name: string;
+    is_alive: boolean | null;
+    income: number;
+    expenses: number;
+    net: number;
   }>;
 }
 

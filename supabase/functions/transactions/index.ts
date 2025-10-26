@@ -31,11 +31,11 @@ serve(async (req) => {
       throw new Error('Unauthorized');
     }
 
-    const { amount, currency, type, merchant, notes, category_id, account_id, timestamp, tags } = await req.json();
+    const { amount, currency, type, merchant, notes, category_id, account_id, timestamp, tags, family_member_id } = await req.json();
 
     // Validate required fields
-    if (!amount || !currency || !type) {
-      throw new Error('Missing required fields: amount, currency, type');
+    if (!amount || !type) {
+      throw new Error('Missing required fields: amount, type');
     }
 
     // Get client IP and hash it
@@ -52,7 +52,7 @@ serve(async (req) => {
       .insert({
         user_id: user.id,
         amount: parseFloat(amount),
-        currency,
+        currency: currency || 'INR',
         type,
         merchant,
         notes,
@@ -60,6 +60,7 @@ serve(async (req) => {
         account_id,
         timestamp: timestamp || new Date().toISOString(),
         tags,
+        family_member_id,
         ip_hash: ipHash,
         metadata: {},
       })

@@ -9,6 +9,7 @@ interface Transaction {
   type: string;
   merchant: string;
   timestamp: string;
+  memberName?: string;
 }
 
 interface RecentTransactionsProps {
@@ -41,7 +42,7 @@ export const RecentTransactions = ({ transactions = [] }: RecentTransactionsProp
       <CardContent>
         <div className="space-y-4">
           {transactions.map((transaction) => (
-            <div key={transaction.id} className="flex items-center justify-between p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors">
+            <div key={transaction.id} className="flex items-center justify-between p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors animate-fade-in">
               <div className="flex items-center gap-3">
                 <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
                   transaction.type === "income" ? "bg-success/10" : "bg-destructive/10"
@@ -53,7 +54,12 @@ export const RecentTransactions = ({ transactions = [] }: RecentTransactionsProp
                   )}
                 </div>
                 <div>
-                  <p className="font-medium">{transaction.merchant}</p>
+                  <p className="font-medium flex items-center gap-2">
+                    {transaction.merchant}
+                    {transaction.memberName && (
+                      <Badge variant="secondary" className="text-[10px]">{transaction.memberName}</Badge>
+                    )}
+                  </p>
                   <p className="text-xs text-muted-foreground">
                     {formatDistanceToNow(new Date(transaction.timestamp), { addSuffix: true })}
                   </p>

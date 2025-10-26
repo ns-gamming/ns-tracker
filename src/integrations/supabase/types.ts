@@ -650,6 +650,7 @@ export type Database = {
           category_id: string | null
           created_at: string | null
           currency: string
+          family_member_id: string | null
           id: string
           ip_hash: string | null
           merchant: string | null
@@ -668,6 +669,7 @@ export type Database = {
           category_id?: string | null
           created_at?: string | null
           currency?: string
+          family_member_id?: string | null
           id?: string
           ip_hash?: string | null
           merchant?: string | null
@@ -686,6 +688,7 @@ export type Database = {
           category_id?: string | null
           created_at?: string | null
           currency?: string
+          family_member_id?: string | null
           id?: string
           ip_hash?: string | null
           merchant?: string | null
@@ -711,6 +714,13 @@ export type Database = {
             columns: ["category_id"]
             isOneToOne: false
             referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transactions_family_member_id_fkey"
+            columns: ["family_member_id"]
+            isOneToOne: false
+            referencedRelation: "family_members"
             referencedColumns: ["id"]
           },
           {

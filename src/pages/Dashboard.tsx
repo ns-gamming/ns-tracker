@@ -12,6 +12,8 @@ import { FinancialChatbot } from "@/components/FinancialChatbot";
 import { useDashboardData } from "@/hooks/useDashboardData";
 import { FinancialCharts } from "@/components/FinancialCharts";
 import { RecentTransactions } from "@/components/RecentTransactions";
+import { FamilyOverview } from "@/components/FamilyOverview";
+import { MarketHoldings } from "@/components/MarketHoldings";
 
 const Dashboard = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -82,16 +84,16 @@ const Dashboard = () => {
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <Button variant="ghost" size="icon" onClick={() => setShowChatbot(true)} title="AI Financial Advisor">
+              <Button variant="ghost" size="icon" onClick={() => setShowChatbot(true)} title="AI Financial Advisor" className="hover-scale">
                 <MessageSquare className="h-5 w-5" />
               </Button>
-              <Button variant="ghost" size="icon" onClick={() => navigate("/family")} title="Family Members">
+              <Button variant="ghost" size="icon" onClick={() => navigate("/family")} title="Family Members" className="hover-scale">
                 <Users className="h-5 w-5" />
               </Button>
-              <Button variant="ghost" size="icon" onClick={toggleTheme}>
+              <Button variant="ghost" size="icon" onClick={toggleTheme} className="hover-scale">
                 {theme === "light" ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />}
               </Button>
-              <Button variant="ghost" onClick={handleSignOut}>
+              <Button variant="ghost" onClick={handleSignOut} className="hover-scale">
                 <LogOut className="mr-2 h-4 w-4" />
                 Sign Out
               </Button>
@@ -112,7 +114,7 @@ const Dashboard = () => {
         </div>
 
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 mb-8">
-          <Card className="shadow-card">
+          <Card className="shadow-card animate-fade-in">
             <CardHeader className="pb-3">
               <CardDescription>Net Worth</CardDescription>
               <CardTitle className="text-3xl tabular-nums">
@@ -124,7 +126,7 @@ const Dashboard = () => {
             </CardContent>
           </Card>
 
-          <Card className="shadow-card">
+          <Card className="shadow-card animate-fade-in">
             <CardHeader className="pb-3">
               <CardDescription>Monthly Income</CardDescription>
               <CardTitle className="text-3xl tabular-nums text-success">
@@ -136,7 +138,7 @@ const Dashboard = () => {
             </CardContent>
           </Card>
 
-          <Card className="shadow-card">
+          <Card className="shadow-card animate-fade-in">
             <CardHeader className="pb-3">
               <CardDescription>Monthly Expenses</CardDescription>
               <CardTitle className="text-3xl tabular-nums text-destructive">
@@ -148,7 +150,7 @@ const Dashboard = () => {
             </CardContent>
           </Card>
 
-          <Card className="shadow-card">
+          <Card className="shadow-card animate-fade-in">
             <CardHeader className="pb-3">
               <CardDescription>Savings Rate</CardDescription>
               <CardTitle className="text-3xl tabular-nums">
@@ -170,6 +172,16 @@ const Dashboard = () => {
 
         <div className="mb-8">
           <RecentTransactions transactions={dashboardData?.recentTransactions} />
+        </div>
+
+        <div className="mb-8">
+          {/* Family overview by member */}
+          {/* @ts-ignore - runtime data shape enforced */}
+          <FamilyOverview items={dashboardData?.familySummary || []} />
+        </div>
+
+        <div className="mb-8">
+          <MarketHoldings />
         </div>
 
         <Card className="shadow-card">
