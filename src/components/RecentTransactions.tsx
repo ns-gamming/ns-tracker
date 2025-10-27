@@ -1,5 +1,7 @@
+import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { DateRangeFilter } from "@/components/DateRangeFilter";
 import { ArrowUpRight, ArrowDownRight } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 
@@ -17,6 +19,17 @@ interface RecentTransactionsProps {
 }
 
 export const RecentTransactions = ({ transactions = [] }: RecentTransactionsProps) => {
+  const [startDate, setStartDate] = useState<Date | undefined>();
+  const [endDate, setEndDate] = useState<Date | undefined>();
+
+  const filteredTransactions = transactions.filter((t) => {
+    if (!startDate && !endDate) return true;
+    const txDate = new Date(t.timestamp);
+    if (startDate && txDate < startDate) return false;
+    if (endDate && txDate > endDate) return false;
+    return true;
+  });
+
   if (transactions.length === 0) {
     return (
       <Card className="shadow-card">
@@ -38,45 +51,50 @@ export const RecentTransactions = ({ transactions = [] }: RecentTransactionsProp
       <CardHeader>
         <CardTitle>Recent Transactions</CardTitle>
         <CardDescription>Your latest financial activity</CardDescription>
+        <DateRangeFilter onDateChange={(start, end) => { setStartDate(start); setEndDate(end); }} />
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
-          {transactions.map((transaction) => (
-            <div key={transaction.id} className="flex items-center justify-between p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors animate-fade-in">
-              <div className="flex items-center gap-3">
-                <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                  transaction.type === "income" ? "bg-success/10" : "bg-destructive/10"
-                }`}>
-                  {transaction.type === "income" ? (
-                    <ArrowUpRight className="w-5 h-5 text-success" />
-                  ) : (
-                    <ArrowDownRight className="w-5 h-5 text-destructive" />
-                  )}
-                </div>
-                <div>
-                  <p className="font-medium flex items-center gap-2">
-                    {transaction.merchant}
-                    {transaction.memberName && (
-                      <Badge variant="secondary" className="text-[10px]">{transaction.memberName}</Badge>
+          {filteredTransactions.length === 0 ? (
+            <p className="text-center text-muted-foreground py-8">No transactions found for this date range</p>
+          ) : (
+            filteredTransactions.slice(0, 20).map((transaction) => (
+              <div key={transaction.id} className="flex items-center justify-between p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors animate-fade-in">
+                <div className="flex items-center gap-3">
+                  <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                    transaction.type === "income" ? "bg-success/10" : "bg-destructive/10"
+                  }`}>
+                    {transaction.type === "income" ? (
+                      <ArrowUpRight className="w-5 h-5 text-success" />
+                    ) : (
+                      <ArrowDownRight className="w-5 h-5 text-destructive" />
                     )}
+                  </div>
+                  <div>
+                    <p className="font-medium flex items-center gap-2">
+                      {transaction.merchant}
+                      {transaction.memberName && (
+                        <Badge variant="secondary" className="text-[10px]">{transaction.memberName}</Badge>
+                      )}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {formatDistanceToNow(new Date(transaction.timestamp), { addSuffix: true })}
+                    </p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className={`font-semibold ${
+                    transaction.type === "income" ? "text-success" : "text-destructive"
+                  }`}>
+                    {transaction.type === "income" ? "+" : "-"}₹{Math.abs(transaction.amount).toFixed(2)}
                   </p>
-                  <p className="text-xs text-muted-foreground">
-                    {formatDistanceToNow(new Date(transaction.timestamp), { addSuffix: true })}
-                  </p>
+                  <Badge variant={transaction.type === "income" ? "default" : "secondary"} className="text-xs">
+                    {transaction.type}
+                  </Badge>
                 </div>
               </div>
-              <div className="text-right">
-                <p className={`font-semibold ${
-                  transaction.type === "income" ? "text-success" : "text-destructive"
-                }`}>
-                  {transaction.type === "income" ? "+" : "-"}₹{Math.abs(transaction.amount).toFixed(2)}
-                </p>
-                <Badge variant={transaction.type === "income" ? "default" : "secondary"} className="text-xs">
-                  {transaction.type}
-                </Badge>
-              </div>
-            </div>
-          ))}
+            ))
+          )}
         </div>
       </CardContent>
     </Card>

@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
 import { User } from "@supabase/supabase-js";
-import { TrendingUp, LogOut, Plus, Moon, Sun, RefreshCw, MessageSquare, Users, Link as LinkIcon } from "lucide-react";
+import { TrendingUp, LogOut, Plus, Moon, Sun, RefreshCw, MessageSquare, Users, Link as LinkIcon, Shield } from "lucide-react";
 import logoImage from "@/assets/ns-tracker-logo.png";
 import { AddTransactionDialog } from "@/components/AddTransactionDialog";
 import { BudgetDialog } from "@/components/BudgetDialog";
@@ -95,6 +95,9 @@ const Dashboard = () => {
               </Button>
               <Button variant="ghost" size="icon" onClick={() => navigate("/family")} title="Family Members" className="hover-scale">
                 <Users className="h-5 w-5" />
+              </Button>
+              <Button variant="ghost" size="icon" onClick={() => navigate("/privacy")} title="Privacy & Security" className="hover-scale">
+                <Shield className="h-5 w-5" />
               </Button>
               <Button variant="ghost" size="icon" onClick={toggleTheme} className="hover-scale">
                 {theme === "light" ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />}

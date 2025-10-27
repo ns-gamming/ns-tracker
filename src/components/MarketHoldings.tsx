@@ -7,14 +7,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
-interface Stock { id: string; symbol: string; name: string; quantity: number; purchase_price: number }
-interface Crypto { id: string; symbol: string; name: string; quantity: number; purchase_price: number }
+interface Stock { id: string; symbol: string; name: string; quantity: number; purchase_price: number; currency: string; current_price?: number }
+interface Crypto { id: string; symbol: string; name: string; quantity: number; purchase_price: number; currency: string; current_price?: number }
 
 export const MarketHoldings = () => {
   const [stocks, setStocks] = useState<Stock[]>([]);
   const [crypto, setCrypto] = useState<Crypto[]>([]);
   const [adding, setAdding] = useState<{ type: 'stock' | 'crypto' | null }>({ type: null });
-  const [form, setForm] = useState({ type: 'stock' as 'stock' | 'crypto', symbol: '', name: '', quantity: '', purchase_price: '' });
+  const [form, setForm] = useState({ type: 'stock' as 'stock' | 'crypto', symbol: '', name: '', quantity: '', purchase_price: '', currency: 'USD' });
   const [prices, setPrices] = useState<Record<string, number>>({});
 
   const load = async () => {
@@ -26,17 +26,58 @@ export const MarketHoldings = () => {
     ]);
     setStocks((s || []) as any);
     setCrypto((c || []) as any);
-
-    // Try to fetch live prices
-    try {
-      const { data, error } = await supabase.functions.invoke('market-data', {
-        body: { stocks: (s || []).map((x: any) => x.symbol), crypto: (c || []).map((x: any) => x.symbol) }
-      });
-      if (!error && data) setPrices(data?.prices || {});
-    } catch { /* ignore */ }
+    fetchPrices(s || [], c || []);
   };
 
-  useEffect(() => { load(); }, []);
+  const fetchPrices = async (stocksList?: Stock[], cryptoList?: Crypto[]) => {
+    const s = stocksList || stocks;
+    const c = cryptoList || crypto;
+
+    if (s.length > 0) {
+      try {
+        const { data } = await supabase.functions.invoke("market-data", {
+          body: { symbols: s.map((stock) => stock.symbol), type: "stock" },
+        });
+        if (data?.prices) {
+          setPrices((prev) => ({ ...prev, ...data.prices }));
+          // Update database with current prices
+          s.forEach(async (stock) => {
+            if (data.prices[stock.symbol]) {
+              await supabase.from("stocks").update({ current_price: data.prices[stock.symbol] }).eq("id", stock.id);
+            }
+          });
+        }
+      } catch (error) {
+        console.error("Error fetching stock prices:", error);
+      }
+    }
+
+    if (c.length > 0) {
+      try {
+        const { data } = await supabase.functions.invoke("market-data", {
+          body: { symbols: c.map((coin) => coin.symbol), type: "crypto" },
+        });
+        if (data?.prices) {
+          setPrices((prev) => ({ ...prev, ...data.prices }));
+          // Update database with current prices
+          c.forEach(async (coin) => {
+            if (data.prices[coin.symbol]) {
+              await supabase.from("crypto").update({ current_price: data.prices[coin.symbol] }).eq("id", coin.id);
+            }
+          });
+        }
+      } catch (error) {
+        console.error("Error fetching crypto prices:", error);
+      }
+    }
+  };
+
+  useEffect(() => {
+    load();
+    // Real-time price updates every 30 seconds
+    const interval = setInterval(() => fetchPrices(), 30000);
+    return () => clearInterval(interval);
+  }, []);
 
   const addHolding = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -50,6 +91,7 @@ export const MarketHoldings = () => {
           name: form.name,
           quantity: Number(form.quantity),
           purchase_price: Number(form.purchase_price),
+          currency: form.currency,
         });
         if (error) throw error;
       } else {
@@ -59,12 +101,13 @@ export const MarketHoldings = () => {
           name: form.name,
           quantity: Number(form.quantity),
           purchase_price: Number(form.purchase_price),
+          currency: form.currency,
         });
         if (error) throw error;
       }
       toast.success('Added successfully');
       setAdding({ type: null });
-      setForm({ type: 'stock', symbol: '', name: '', quantity: '', purchase_price: '' });
+      setForm({ type: 'stock', symbol: '', name: '', quantity: '', purchase_price: '', currency: 'USD' });
       load();
     } catch (e: any) {
       toast.error(e.message || 'Failed to add');
@@ -111,6 +154,17 @@ export const MarketHoldings = () => {
               <Label>Buy Price</Label>
               <Input required type="number" step="0.01" value={form.purchase_price} onChange={(e) => setForm({ ...form, purchase_price: e.target.value })} />
             </div>
+            <div className="space-y-1">
+              <Label>Currency</Label>
+              <Select value={form.currency} onValueChange={(v) => setForm({ ...form, currency: v })}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="USD">USD ($)</SelectItem>
+                  <SelectItem value="INR">INR (₹)</SelectItem>
+                  <SelectItem value="EUR">EUR (€)</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
             <div className="sm:col-span-5 flex gap-2">
               <Button type="submit">Save</Button>
               <Button type="button" variant="outline" onClick={() => setAdding({ type: null })}>Cancel</Button>
@@ -126,16 +180,17 @@ export const MarketHoldings = () => {
             const currentValue = price ? Number(price) * Number(it.quantity) : null;
             const invested = Number(it.purchase_price) * Number(it.quantity);
             const pnl = currentValue !== null ? currentValue - invested : null;
+            const currencySymbol = it.currency === "INR" ? "₹" : it.currency === "USD" ? "$" : "€";
             return (
               <div key={it.id} className="p-3 rounded-lg border border-border bg-card/50 flex items-center justify-between">
                 <div>
                   <div className="font-medium">{it.symbol} • {it.name}</div>
-                  <div className="text-xs text-muted-foreground">Qty {Number(it.quantity)} @ ₹{Number(it.purchase_price).toFixed(2)}</div>
+                  <div className="text-xs text-muted-foreground">Qty {Number(it.quantity)} @ {currencySymbol}{Number(it.purchase_price).toFixed(2)}</div>
                 </div>
                 <div className="text-right">
-                  <div className="text-sm">Price: {price ? `₹${Number(price).toFixed(2)}` : '—'}</div>
+                  <div className="text-sm">Price: {price ? `${currencySymbol}${Number(price).toFixed(2)}` : '—'}</div>
                   <div className={`text-sm ${pnl !== null ? (pnl >= 0 ? 'text-success' : 'text-destructive') : ''}`}>
-                    {pnl !== null ? `PnL: ₹${pnl.toFixed(2)}` : 'PnL: —'}
+                    {pnl !== null ? `PnL: ${currencySymbol}${pnl.toFixed(2)}` : 'PnL: —'}
                   </div>
                 </div>
               </div>

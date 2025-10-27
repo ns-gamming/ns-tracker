@@ -56,25 +56,68 @@ serve(async (req) => {
       .eq("conversation_id", convId)
       .order("created_at", { ascending: true });
 
-    const [transactions, budgets, goals, family] = await Promise.all([
-      supabase.from("transactions").select("*").eq("user_id", user.id).order("timestamp", { ascending: false }).limit(100),
-      supabase.from("budgets").select("*").eq("user_id", user.id),
-      supabase.from("goals").select("*").eq("user_id", user.id),
-      supabase.from("family_members").select("id, name, is_alive").eq("user_id", user.id),
-    ]);
+    // Fetch comprehensive financial context
+    const { data: transactions } = await supabase
+      .from("transactions")
+      .select(`
+        *,
+        category:categories(name, slug),
+        family_member:family_members(name, relationship)
+      `)
+      .eq("user_id", user.id)
+      .order("timestamp", { ascending: false })
+      .limit(200);
 
-    const systemPrompt = `You are a helpful financial advisor assistant. You have access to the user's financial data and can provide personalized advice.
+    const { data: accounts } = await supabase.from("accounts").select("*").eq("user_id", user.id);
+    const { data: budgets } = await supabase.from("budgets").select("*").eq("user_id", user.id);
+    const { data: goals } = await supabase.from("goals").select("*").eq("user_id", user.id);
+    const { data: familyMembers } = await supabase.from("family_members").select("*").eq("user_id", user.id);
+    const { data: stocks } = await supabase.from("stocks").select("*").eq("user_id", user.id);
+    const { data: crypto } = await supabase.from("crypto").select("*").eq("user_id", user.id);
+    const { data: preciousMetals } = await supabase.from("precious_metals").select("*").eq("user_id", user.id);
+    const { data: orders } = await supabase.from("orders").select("*").eq("user_id", user.id);
+    const { data: achievements } = await supabase.from("achievements").select("*").eq("user_id", user.id);
 
-Current Financial Context:
-- Recent Transactions: ${transactions.data?.length || 0} items (last 100)
-- Active Budgets: ${budgets.data?.length || 0} budgets
-- Financial Goals: ${goals.data?.length || 0} goals
-- Family Members: ${family.data?.length || 0} members
+    // Calculate financial summary
+    const totalIncome = transactions?.filter(t => t.type === 'income').reduce((sum, t) => sum + Number(t.amount), 0) || 0;
+    const totalExpenses = transactions?.filter(t => t.type === 'expense').reduce((sum, t) => sum + Number(t.amount), 0) || 0;
+    const netWorth = accounts?.reduce((sum, a) => sum + Number(a.balance), 0) || 0;
+    const stockValue = stocks?.reduce((sum, s) => sum + (Number(s.quantity) * Number(s.current_price || s.purchase_price)), 0) || 0;
+    const cryptoValue = crypto?.reduce((sum, c) => sum + (Number(c.quantity) * Number(c.current_price || c.purchase_price)), 0) || 0;
+    const metalValue = preciousMetals?.reduce((sum, m) => sum + (Number(m.quantity) * Number(m.current_price || m.purchase_price)), 0) || 0;
 
-Instructions:
-- Analyze spending and income patterns, calculate savings rate, and identify overspending categories.
-- Consider family_member_id on transactions to attribute expenses/income to the correct person; provide per-person tips.
-- Provide concise, practical, and actionable advice with simple calculations when useful.`;
+    const systemPrompt = `You are an expert AI financial advisor with comprehensive access to the user's complete financial portfolio.
+
+COMPLETE FINANCIAL SNAPSHOT:
+📊 Net Worth: ₹${netWorth.toFixed(2)}
+💰 Total Income: ₹${totalIncome.toFixed(2)}
+💸 Total Expenses: ₹${totalExpenses.toFixed(2)}
+📈 Investments: Stocks (₹${stockValue.toFixed(2)}), Crypto (₹${cryptoValue.toFixed(2)}), Metals (₹${metalValue.toFixed(2)})
+
+DETAILED DATA ACCESS:
+- ${transactions?.length || 0} transactions with full category and family member details
+- ${accounts?.length || 0} accounts with current balances
+- ${stocks?.length || 0} stock holdings
+- ${crypto?.length || 0} crypto assets
+- ${preciousMetals?.length || 0} precious metal investments
+- ${orders?.length || 0} tracked orders
+- ${budgets?.length || 0} active budgets
+- ${goals?.length || 0} financial goals
+- ${familyMembers?.length || 0} family members
+- ${achievements?.length || 0} achievements earned
+
+CAPABILITIES:
+✓ Analyze spending patterns by category and family member
+✓ Provide investment portfolio analysis
+✓ Calculate savings rate and financial health metrics
+✓ Suggest budget optimizations
+✓ Track progress toward goals
+✓ Give personalized advice based on actual data
+✓ Identify unusual spending or opportunities
+
+Always provide specific, data-driven advice with exact amounts and actionable steps.
+Reference actual transactions and patterns from the user's data.
+Be encouraging about achievements and constructive about improvements.`;
 
     // Call Gemini API
     const geminiMessages = [
