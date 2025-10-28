@@ -20,6 +20,8 @@ import { OrderTracking } from "@/components/OrderTracking";
 import { PreciousMetals } from "@/components/PreciousMetals";
 import { Achievements } from "@/components/Achievements";
 import { FeedbackDialog } from "@/components/FeedbackDialog";
+import { NewsWidget } from "@/components/NewsWidget";
+import { AdSense } from "@/components/AdSense";
 
 const Dashboard = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -195,7 +197,20 @@ const Dashboard = () => {
         </div>
 
         <div className="mb-8">
-          <MarketHoldings />
+          <AdSense slot="1234567890" format="horizontal" className="my-8" />
+        </div>
+
+        <div className="grid gap-6 lg:grid-cols-3 mb-8">
+          <div className="lg:col-span-2">
+            <MarketHoldings />
+          </div>
+          <div>
+            <NewsWidget />
+          </div>
+        </div>
+
+        <div className="mb-8">
+          <AdSense slot="0987654321" format="auto" />
         </div>
 
         <div className="mb-8">
@@ -206,24 +221,24 @@ const Dashboard = () => {
           <OrderTracking />
         </div>
 
-        <Card className="shadow-card">
+        <Card className="shadow-card animate-fade-in">
           <CardHeader>
             <CardTitle>Quick Actions</CardTitle>
-            <CardDescription>Manage your finances</CardDescription>
+            <CardDescription>Manage your finances efficiently</CardDescription>
           </CardHeader>
           <CardContent className="flex flex-wrap gap-4">
-            <Button className="gap-2" onClick={() => setShowAddTransaction(true)}>
+            <Button className="gap-2 hover:scale-105 transition-transform" onClick={() => setShowAddTransaction(true)}>
               <Plus className="h-4 w-4" />
               Add Transaction
             </Button>
-            <Button variant="outline" className="gap-2" onClick={() => toast.info("Bank connection coming soon!")}>
+            <Button variant="outline" className="gap-2 hover:scale-105 transition-transform" onClick={() => toast.info("Bank connection coming soon!")}>
               <LinkIcon className="h-4 w-4" />
               Connect Bank Account
             </Button>
-            <Button variant="outline" className="gap-2" onClick={() => setShowBudgetDialog(true)}>
+            <Button variant="outline" className="gap-2 hover:scale-105 transition-transform" onClick={() => setShowBudgetDialog(true)}>
               Set Budget
             </Button>
-            <Button variant="outline" className="gap-2" onClick={() => navigate("/family")}>
+            <Button variant="outline" className="gap-2 hover:scale-105 transition-transform" onClick={() => navigate("/family")}>
               <Users className="h-4 w-4" />
               Manage Family
             </Button>

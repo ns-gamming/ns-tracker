@@ -125,6 +125,10 @@ const Auth = () => {
                     {loading ? "Signing in..." : "Sign In"}
                   </Button>
                 </form>
+                
+                <div className="mt-4 text-center text-sm text-muted-foreground">
+                  <p>Google OAuth coming soon - Sign in with your Google account</p>
+                </div>
               </TabsContent>
 
               <TabsContent value="signup">
@@ -136,11 +140,16 @@ const Auth = () => {
                   <div className="space-y-2">
                     <Label htmlFor="password-signup">Password</Label>
                     <Input id="password-signup" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={6} />
+                    <p className="text-xs text-muted-foreground">Minimum 6 characters</p>
                   </div>
                   <Button type="submit" className="w-full" disabled={loading}>
                     {loading ? "Creating..." : "Create Account"}
                   </Button>
                 </form>
+                
+                <div className="mt-4 text-center text-sm text-muted-foreground">
+                  <p>By signing up, you agree to our <a href="/privacy" className="text-primary hover:underline">Privacy Policy</a></p>
+                </div>
               </TabsContent>
             </Tabs>
           </CardContent>
