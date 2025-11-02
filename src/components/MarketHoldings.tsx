@@ -114,6 +114,42 @@ export const MarketHoldings = () => {
     }
   };
 
+  const sellHolding = async (id: string, type: 'stock' | 'crypto', symbol: string, quantity: number) => {
+    const sellQty = prompt(`How much ${symbol} do you want to sell? (Available: ${quantity})`);
+    if (!sellQty || isNaN(Number(sellQty)) || Number(sellQty) <= 0 || Number(sellQty) > quantity) {
+      if (sellQty) toast.error("Invalid quantity");
+      return;
+    }
+
+    try {
+      const remaining = quantity - Number(sellQty);
+      const table = type === 'stock' ? 'stocks' : 'crypto';
+      
+      if (remaining === 0) {
+        await supabase.from(table).delete().eq('id', id);
+        toast.success(`Sold all ${symbol}`);
+      } else {
+        await supabase.from(table).update({ quantity: remaining }).eq('id', id);
+        toast.success(`Sold ${sellQty} ${symbol}`);
+      }
+      load();
+    } catch (e: any) {
+      toast.error(e.message || 'Failed to sell');
+    }
+  };
+
+  const deleteHolding = async (id: string, type: 'stock' | 'crypto', symbol: string) => {
+    if (!confirm(`Delete ${symbol}? This cannot be undone.`)) return;
+    try {
+      const table = type === 'stock' ? 'stocks' : 'crypto';
+      await supabase.from(table).delete().eq('id', id);
+      toast.success(`Deleted ${symbol}`);
+      load();
+    } catch (e: any) {
+      toast.error(e.message || 'Failed to delete');
+    }
+  };
+
   const renderList = (title: string, items: any[], type: 'stock' | 'crypto') => {
     const totalValue = items.reduce((sum, it) => {
       const price = prices[it.symbol?.toUpperCase()] ?? it.current_price ?? it.purchase_price;
@@ -216,7 +252,7 @@ export const MarketHoldings = () => {
             const currencySymbol = it.currency === "INR" ? "₹" : it.currency === "USD" ? "$" : "€";
             return (
               <div key={it.id} className="p-4 rounded-lg border border-border bg-card/50 hover:bg-accent/50 hover:scale-[1.01] transition-all duration-200 animate-fade-in">
-                <div className="flex items-start justify-between">
+                <div className="flex items-start justify-between gap-3">
                   <div className="flex-1">
                     <div className="font-semibold text-base mb-1">{it.symbol}</div>
                     <div className="text-xs text-muted-foreground mb-2">{it.name}</div>
@@ -245,6 +281,24 @@ export const MarketHoldings = () => {
                       </div>
                     )}
                   </div>
+                </div>
+                <div className="flex gap-2 mt-3">
+                  <Button 
+                    size="sm" 
+                    variant="outline" 
+                    onClick={() => sellHolding(it.id, type, it.symbol, it.quantity)}
+                    className="flex-1 text-xs h-8"
+                  >
+                    💰 Sell
+                  </Button>
+                  <Button 
+                    size="sm" 
+                    variant="destructive" 
+                    onClick={() => deleteHolding(it.id, type, it.symbol)}
+                    className="text-xs h-8"
+                  >
+                    🗑️
+                  </Button>
                 </div>
               </div>
             );

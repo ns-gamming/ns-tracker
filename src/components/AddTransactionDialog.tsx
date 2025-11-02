@@ -15,7 +15,7 @@ interface AddTransactionDialogProps {
   onSuccess?: () => void;
 }
 
-interface Category { id: string; name: string }
+interface Category { id: string; name: string; color?: string }
 interface Member { id: string; name: string; is_alive: boolean }
 
 export const AddTransactionDialog = ({ open, onOpenChange, onSuccess }: AddTransactionDialogProps) => {
@@ -33,16 +33,21 @@ export const AddTransactionDialog = ({ open, onOpenChange, onSuccess }: AddTrans
     family_member_id: "",
   });
 
-  // Filter categories based on transaction type
+  // Filter categories based on transaction type using color coding
   const filteredCategories = categories.filter(cat => {
-    const name = cat.name.toLowerCase();
+    // Income categories are green (#10b981)
+    // Expense categories are red (#ef4444)  
+    // Savings categories are blue (#3b82f6)
+    const color = cat.color?.toLowerCase() || '';
+    
     if (formData.type === "income") {
-      return ["salary", "bonus", "investment", "freelance", "business", "rental", "refund", "gift"].some(keyword => name.includes(keyword));
+      return color.includes('10b981') || color.includes('green');
     } else if (formData.type === "savings") {
-      return ["savings", "investment", "retirement", "emergency"].some(keyword => name.includes(keyword));
+      return color.includes('3b82f6') || color.includes('blue');
+    } else {
+      // expense
+      return color.includes('ef4444') || color.includes('red');
     }
-    // For expense, show all expense-related categories
-    return !["salary", "bonus", "investment income", "freelance", "business income", "rental income"].some(keyword => name.includes(keyword));
   });
 
   useEffect(() => {

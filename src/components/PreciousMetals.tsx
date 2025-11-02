@@ -171,10 +171,10 @@ export const PreciousMetals = () => {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="gold">Gold</SelectItem>
-                      <SelectItem value="silver">Silver</SelectItem>
-                      <SelectItem value="platinum">Platinum</SelectItem>
-                      <SelectItem value="digital_gold">Digital Gold</SelectItem>
+                      <SelectItem value="gold">🪙 Gold</SelectItem>
+                      <SelectItem value="silver">⚪ Silver</SelectItem>
+                      <SelectItem value="platinum">⚫ Platinum</SelectItem>
+                      <SelectItem value="digital_gold">💎 Digital Gold</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
