@@ -15,7 +15,7 @@ interface AddTransactionDialogProps {
   onSuccess?: () => void;
 }
 
-interface Category { id: string; name: string; color?: string; icon?: string }
+interface Category { id: string; name: string; color?: string; icon?: string; category_type?: string }
 interface Member { id: string; name: string; is_alive: boolean }
 
 export const AddTransactionDialog = ({ open, onOpenChange, onSuccess }: AddTransactionDialogProps) => {
@@ -34,29 +34,24 @@ export const AddTransactionDialog = ({ open, onOpenChange, onSuccess }: AddTrans
     family_member_id: "",
   });
 
-  // Filter categories based on transaction type using color coding
-  const filteredCategories = categories.filter(cat => {
-    // Income categories are green (#10b981)
-    // Expense categories are red (#ef4444)  
-    // Savings categories are blue (#3b82f6)
-    const color = cat.color?.toLowerCase() || '';
-    
-    if (formData.type === "income") {
-      return color.includes('10b981') || color.includes('green');
-    } else if (formData.type === "savings") {
-      return color.includes('3b82f6') || color.includes('blue');
-    } else {
-      // expense
-      return color.includes('ef4444') || color.includes('red');
+  const getCurrencySymbol = (currency: string) => {
+    switch (currency) {
+      case 'USD': return '$';
+      case 'EUR': return '€';
+      case 'USDT': return '₮';
+      case 'INR': default: return '₹';
     }
-  });
+  };
+
+  // Filter categories based on explicit category_type
+  const filteredCategories = categories.filter(cat => cat.category_type === formData.type);
 
   useEffect(() => {
     const load = async () => {
       const userId = (await supabase.auth.getUser()).data.user?.id;
       if (!userId) return;
       const [{ data: cats }, { data: mems }] = await Promise.all([
-        supabase.from("categories").select("id, name, color, icon").or(`user_id.eq.${userId},user_id.is.null`),
+        supabase.from("categories").select("id, name, color, icon, category_type").or(`user_id.eq.${userId},user_id.is.null`),
         supabase.from("family_members").select("id, name, is_alive").eq("user_id", userId),
       ]);
       setCategories(cats || []);
@@ -151,10 +146,11 @@ export const AddTransactionDialog = ({ open, onOpenChange, onSuccess }: AddTrans
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="INR">INR</SelectItem>
-                  <SelectItem value="USD">USD</SelectItem>
-                  <SelectItem value="EUR">EUR</SelectItem>
+                 <SelectContent>
+                  <SelectItem value="INR">INR (₹)</SelectItem>
+                  <SelectItem value="USD">USD ($)</SelectItem>
+                  <SelectItem value="EUR">EUR (€)</SelectItem>
+                  <SelectItem value="USDT">USDT (₮)</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -162,7 +158,7 @@ export const AddTransactionDialog = ({ open, onOpenChange, onSuccess }: AddTrans
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="amount">Amount (₹)</Label>
+              <Label htmlFor="amount">Amount ({getCurrencySymbol(formData.currency)})</Label>
               <Input
                 id="amount"
                 type="number"
