@@ -15,7 +15,7 @@ interface AddTransactionDialogProps {
   onSuccess?: () => void;
 }
 
-interface Category { id: string; name: string; color?: string }
+interface Category { id: string; name: string; color?: string; icon?: string }
 interface Member { id: string; name: string; is_alive: boolean }
 
 export const AddTransactionDialog = ({ open, onOpenChange, onSuccess }: AddTransactionDialogProps) => {
@@ -28,6 +28,7 @@ export const AddTransactionDialog = ({ open, onOpenChange, onSuccess }: AddTrans
     currency: "INR",
     merchant: "",
     notes: "",
+    description: "",
     date: new Date().toISOString().split("T")[0],
     category_id: "",
     family_member_id: "",
@@ -55,7 +56,7 @@ export const AddTransactionDialog = ({ open, onOpenChange, onSuccess }: AddTrans
       const userId = (await supabase.auth.getUser()).data.user?.id;
       if (!userId) return;
       const [{ data: cats }, { data: mems }] = await Promise.all([
-        supabase.from("categories").select("id, name").or(`user_id.eq.${userId},user_id.is.null`),
+        supabase.from("categories").select("id, name, color, icon").or(`user_id.eq.${userId},user_id.is.null`),
         supabase.from("family_members").select("id, name, is_alive").eq("user_id", userId),
       ]);
       setCategories(cats || []);
@@ -83,6 +84,7 @@ export const AddTransactionDialog = ({ open, onOpenChange, onSuccess }: AddTrans
           amount: amountNum,
           merchant: formData.merchant || undefined,
           notes: formData.notes || undefined,
+          description: formData.description || undefined,
           currency: formData.currency,
           timestamp: new Date(formData.date).toISOString(),
           category_id: formData.category_id || undefined,
@@ -99,6 +101,7 @@ export const AddTransactionDialog = ({ open, onOpenChange, onSuccess }: AddTrans
         currency: "INR",
         merchant: "",
         notes: "",
+        description: "",
         date: new Date().toISOString().split("T")[0],
         category_id: "",
         family_member_id: "",
@@ -210,6 +213,7 @@ export const AddTransactionDialog = ({ open, onOpenChange, onSuccess }: AddTrans
                           className="cursor-pointer hover:bg-accent focus:bg-accent rounded-md my-0.5 h-10 flex items-center transition-all"
                         >
                           <span className="flex items-center gap-2">
+                            {c.icon && <span className="text-lg">{c.icon}</span>}
                             <span className="text-base">{c.name}</span>
                           </span>
                         </SelectItem>
@@ -273,12 +277,24 @@ export const AddTransactionDialog = ({ open, onOpenChange, onSuccess }: AddTrans
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="notes">Notes (optional)</Label>
+            <Label htmlFor="description">Description</Label>
+            <Textarea
+              id="description"
+              value={formData.description}
+              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+              placeholder="Why this transaction? How was the money earned/spent?"
+              className="min-h-[80px]"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="notes">Additional Notes (optional)</Label>
             <Textarea
               id="notes"
               value={formData.notes}
               onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-              placeholder="Add any additional details..."
+              placeholder="Any other details..."
+              className="min-h-[60px]"
             />
           </div>
 

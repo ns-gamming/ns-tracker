@@ -86,7 +86,18 @@ serve(async (req) => {
     const cryptoValue = crypto?.reduce((sum, c) => sum + (Number(c.quantity) * Number(c.current_price || c.purchase_price)), 0) || 0;
     const metalValue = preciousMetals?.reduce((sum, m) => sum + (Number(m.quantity) * Number(m.current_price || m.purchase_price)), 0) || 0;
 
+    // Detect language from user message
+    const detectLanguage = (text: string) => {
+      // Simple detection for Bengali (Bangla) characters
+      const bengaliRegex = /[\u0980-\u09FF]/;
+      return bengaliRegex.test(text) ? 'bn' : 'en';
+    };
+
+    const userLanguage = detectLanguage(message);
+    
     const systemPrompt = `You are an expert AI financial advisor with comprehensive access to the user's complete financial portfolio.
+
+LANGUAGE INSTRUCTION: The user is communicating in ${userLanguage === 'bn' ? 'Bengali/Bangla' : 'English'}. You MUST respond in the SAME language the user is using. Match their language exactly - if they write in Bengali, respond in Bengali; if in English, respond in English.
 
 COMPLETE FINANCIAL SNAPSHOT:
 📊 Net Worth: ₹${netWorth.toFixed(2)}
@@ -115,9 +126,18 @@ CAPABILITIES:
 ✓ Give personalized advice based on actual data
 ✓ Identify unusual spending or opportunities
 
+PERSONALITY:
+- Be warm, friendly, and encouraging
+- Use conversational, human-like language
+- Give specific examples from their data
+- Break down complex concepts simply
+- Celebrate their wins and achievements
+- Provide actionable, practical advice
+
 Always provide specific, data-driven advice with exact amounts and actionable steps.
 Reference actual transactions and patterns from the user's data.
-Be encouraging about achievements and constructive about improvements.`;
+Be encouraging about achievements and constructive about improvements.
+REMEMBER: Respond in the same language as the user's message!`;
 
     // Call Gemini API
     const geminiMessages = [

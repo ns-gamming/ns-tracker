@@ -114,8 +114,18 @@ export const OrderTracking = () => {
     }
   };
 
+  const getCurrencySymbol = (currency: string) => {
+    switch(currency) {
+      case "USD": return "$";
+      case "EUR": return "€";
+      case "INR": return "₹";
+      default: return currency;
+    }
+  };
+
   const totalSpent = orders.reduce((sum, order) => {
     if (order.currency === "INR") return sum + Number(order.amount);
+    // For other currencies, we'd need conversion but for now just show INR total
     return sum;
   }, 0);
 
@@ -291,8 +301,7 @@ export const OrderTracking = () => {
                     {new Date(order.order_date).toLocaleDateString()}
                   </span>
                   <span className="font-semibold">
-                    {order.currency === "INR" ? "₹" : order.currency === "USD" ? "$" : "€"}
-                    {Number(order.amount).toFixed(2)}
+                    {getCurrencySymbol(order.currency)}{Number(order.amount).toFixed(2)}
                   </span>
                 </div>
                 {order.tracking_number && (

@@ -10,12 +10,14 @@ import { Calendar, User as UserIcon, Mail, Lock, Shield } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface UserProfile {
+  name?: string;
   display_name?: string;
   gender?: string;
   age?: number;
   date_of_birth?: string;
   profile_picture_url?: string;
   created_at?: string;
+  currency?: string;
 }
 
 export const UserProfile = () => {
@@ -54,20 +56,33 @@ export const UserProfile = () => {
 
       const { data, error } = await supabase
         .from("users")
-        .select("display_name, gender, age, date_of_birth, profile_picture_url, created_at")
+        .select("*")
         .eq("id", user.id)
         .single();
 
-      if (error) throw error;
+      if (error) {
+        console.error("Error loading profile:", error);
+      }
 
-      setProfile(data || {});
-      
-      if (data?.created_at) {
-        const createdDate = new Date(data.created_at);
-        const today = new Date();
-        const diffTime = Math.abs(today.getTime() - createdDate.getTime());
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-        setDaysUsing(diffDays);
+      if (data) {
+        setProfile({
+          name: (data as any).name,
+          display_name: data.display_name,
+          gender: data.gender,
+          age: data.age,
+          date_of_birth: data.date_of_birth,
+          profile_picture_url: data.profile_picture_url,
+          created_at: data.created_at,
+          currency: (data as any).currency || "INR",
+        });
+        
+        if (data.created_at) {
+          const createdDate = new Date(data.created_at);
+          const today = new Date();
+          const diffTime = Math.abs(today.getTime() - createdDate.getTime());
+          const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+          setDaysUsing(diffDays);
+        }
       }
     } catch (error: any) {
       toast.error("Failed to load profile");
@@ -83,10 +98,12 @@ export const UserProfile = () => {
       const { error } = await supabase
         .from("users")
         .update({
+          name: profile.name,
           display_name: profile.display_name,
           gender: profile.gender,
           age: profile.age,
           date_of_birth: profile.date_of_birth,
+          currency: profile.currency,
         })
         .eq("id", user.id);
 
@@ -167,18 +184,28 @@ export const UserProfile = () => {
                   <Calendar className="w-4 h-4 text-primary" />
                   <p className="text-sm font-medium">Days Using NS TRACKER</p>
                 </div>
-                <p className="text-2xl font-bold text-primary">{daysUsing}</p>
+                <p className="text-2xl font-bold text-primary">{daysUsing} days</p>
               </div>
             </div>
 
             <div className="space-y-3">
+              <div>
+                <Label htmlFor="name">Full Name</Label>
+                <Input
+                  id="name"
+                  value={profile.name || ""}
+                  onChange={(e) => setProfile({ ...profile, name: e.target.value })}
+                  placeholder="Enter your full name"
+                />
+              </div>
+
               <div>
                 <Label htmlFor="display_name">Display Name</Label>
                 <Input
                   id="display_name"
                   value={profile.display_name || ""}
                   onChange={(e) => setProfile({ ...profile, display_name: e.target.value })}
-                  placeholder="Enter your name"
+                  placeholder="Enter your display name"
                 />
               </div>
 
@@ -204,20 +231,25 @@ export const UserProfile = () => {
                   type="date"
                   value={profile.date_of_birth || ""}
                   onChange={(e) => setProfile({ ...profile, date_of_birth: e.target.value })}
+                  max={new Date().toISOString().split('T')[0]}
                 />
-                <p className="text-xs text-muted-foreground mt-1">Age will be calculated automatically</p>
+                {profile.age && (
+                  <p className="text-xs text-muted-foreground mt-1">Age: {profile.age} years</p>
+                )}
               </div>
 
               <div>
-                <Label htmlFor="age">Age (Auto-calculated)</Label>
-                <Input
-                  id="age"
-                  type="number"
-                  value={profile.age || ""}
-                  disabled
-                  className="bg-muted"
-                  placeholder="Set date of birth to calculate"
-                />
+                <Label htmlFor="currency">Preferred Currency</Label>
+                <Select value={profile.currency || "INR"} onValueChange={(value) => setProfile({ ...profile, currency: value })}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select currency" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="INR">INR (₹)</SelectItem>
+                    <SelectItem value="USD">USD ($)</SelectItem>
+                    <SelectItem value="EUR">EUR (€)</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
             </div>
 

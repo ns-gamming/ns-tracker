@@ -14,7 +14,7 @@ export const FinancialCharts = ({ monthlyTrend = [], categoryBreakdown = [] }: F
   if (!hasData) {
     return (
       <div className="grid gap-6 md:grid-cols-2">
-        <Card className="shadow-card">
+        <Card className="shadow-card animate-fade-in">
           <CardHeader>
             <CardTitle>Income vs Expenses</CardTitle>
             <CardDescription>Monthly comparison</CardDescription>
@@ -23,7 +23,7 @@ export const FinancialCharts = ({ monthlyTrend = [], categoryBreakdown = [] }: F
             No transaction data yet. Add your first transaction to see insights!
           </CardContent>
         </Card>
-        <Card className="shadow-card">
+        <Card className="shadow-card animate-fade-in">
           <CardHeader>
             <CardTitle>Spending by Category</CardTitle>
             <CardDescription>Category breakdown</CardDescription>
@@ -39,27 +39,49 @@ export const FinancialCharts = ({ monthlyTrend = [], categoryBreakdown = [] }: F
   return (
     <div className="grid gap-6 md:grid-cols-2">
       {monthlyTrend.length > 0 && (
-        <Card className="shadow-card">
+        <Card className="shadow-card hover-scale animate-fade-in transition-all duration-300">
           <CardHeader>
-            <CardTitle>Income vs Expenses</CardTitle>
-            <CardDescription>6-month trend</CardDescription>
+            <CardTitle className="flex items-center gap-2">
+              📈 Income vs Expenses
+            </CardTitle>
+            <CardDescription>6-month trend analysis</CardDescription>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
               <LineChart data={monthlyTrend}>
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                <XAxis dataKey="month" stroke="hsl(var(--muted-foreground))" />
-                <YAxis stroke="hsl(var(--muted-foreground))" />
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} />
+                <XAxis dataKey="month" stroke="hsl(var(--muted-foreground))" fontSize={12} />
+                <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} />
                 <Tooltip
                   contentStyle={{
                     backgroundColor: "hsl(var(--card))",
                     border: "1px solid hsl(var(--border))",
                     borderRadius: "8px",
+                    boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
                   }}
+                  formatter={(value: number) => `₹${value.toFixed(2)}`}
                 />
                 <Legend />
-                <Line type="monotone" dataKey="income" stroke="hsl(var(--success))" strokeWidth={2} name="Income" />
-                <Line type="monotone" dataKey="expenses" stroke="hsl(var(--destructive))" strokeWidth={2} name="Expenses" />
+                <Line 
+                  type="monotone" 
+                  dataKey="income" 
+                  stroke="#10b981" 
+                  strokeWidth={3} 
+                  name="Income" 
+                  dot={{ fill: "#10b981", r: 5 }}
+                  activeDot={{ r: 7 }}
+                  animationDuration={1000}
+                />
+                <Line 
+                  type="monotone" 
+                  dataKey="expenses" 
+                  stroke="#ef4444" 
+                  strokeWidth={3} 
+                  name="Expenses" 
+                  dot={{ fill: "#ef4444", r: 5 }}
+                  activeDot={{ r: 7 }}
+                  animationDuration={1000}
+                />
               </LineChart>
             </ResponsiveContainer>
           </CardContent>
@@ -67,9 +89,11 @@ export const FinancialCharts = ({ monthlyTrend = [], categoryBreakdown = [] }: F
       )}
 
       {categoryBreakdown.length > 0 && (
-        <Card className="shadow-card">
+        <Card className="shadow-card hover-scale animate-fade-in transition-all duration-300">
           <CardHeader>
-            <CardTitle>Spending by Category</CardTitle>
+            <CardTitle className="flex items-center gap-2">
+              🎯 Spending by Category
+            </CardTitle>
             <CardDescription>This month's breakdown</CardDescription>
           </CardHeader>
           <CardContent>
@@ -81,9 +105,11 @@ export const FinancialCharts = ({ monthlyTrend = [], categoryBreakdown = [] }: F
                   cy="50%"
                   labelLine={false}
                   label={({ category, percent }) => `${category}: ${(percent * 100).toFixed(0)}%`}
-                  outerRadius={80}
+                  outerRadius={90}
                   fill="hsl(var(--primary))"
                   dataKey="amount"
+                  animationBegin={0}
+                  animationDuration={800}
                 >
                   {categoryBreakdown.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
@@ -94,7 +120,9 @@ export const FinancialCharts = ({ monthlyTrend = [], categoryBreakdown = [] }: F
                     backgroundColor: "hsl(var(--card))",
                     border: "1px solid hsl(var(--border))",
                     borderRadius: "8px",
+                    boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
                   }}
+                  formatter={(value: number) => `₹${value.toFixed(2)}`}
                 />
               </PieChart>
             </ResponsiveContainer>
@@ -103,27 +131,31 @@ export const FinancialCharts = ({ monthlyTrend = [], categoryBreakdown = [] }: F
       )}
 
       {monthlyTrend.length > 0 && (
-        <Card className="shadow-card md:col-span-2">
+        <Card className="shadow-card md:col-span-2 hover-scale animate-fade-in transition-all duration-300">
           <CardHeader>
-            <CardTitle>Monthly Overview</CardTitle>
+            <CardTitle className="flex items-center gap-2">
+              📊 Monthly Overview
+            </CardTitle>
             <CardDescription>Bar chart comparison</CardDescription>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={monthlyTrend}>
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                <XAxis dataKey="month" stroke="hsl(var(--muted-foreground))" />
-                <YAxis stroke="hsl(var(--muted-foreground))" />
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} />
+                <XAxis dataKey="month" stroke="hsl(var(--muted-foreground))" fontSize={12} />
+                <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} />
                 <Tooltip
                   contentStyle={{
                     backgroundColor: "hsl(var(--card))",
                     border: "1px solid hsl(var(--border))",
                     borderRadius: "8px",
+                    boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
                   }}
+                  formatter={(value: number) => `₹${value.toFixed(2)}`}
                 />
                 <Legend />
-                <Bar dataKey="income" fill="hsl(var(--success))" name="Income" />
-                <Bar dataKey="expenses" fill="hsl(var(--destructive))" name="Expenses" />
+                <Bar dataKey="income" fill="#10b981" name="Income" radius={[8, 8, 0, 0]} animationDuration={800} />
+                <Bar dataKey="expenses" fill="#ef4444" name="Expenses" radius={[8, 8, 0, 0]} animationDuration={800} />
               </BarChart>
             </ResponsiveContainer>
           </CardContent>
