@@ -32,6 +32,10 @@ import { AdSense } from "@/components/AdSense";
 import { FinancialTips } from "@/components/FinancialTips";
 import { RealityCheck } from "@/components/RealityCheck";
 import { NotesWidget } from "@/components/NotesWidget";
+import { LoadingScreen } from "@/components/LoadingScreen";
+import { DashboardSkeleton } from "@/components/DashboardSkeleton";
+import { WalletManagement } from "@/components/WalletManagement";
+import { UnifiedAssetDialog } from "@/components/UnifiedAssetDialog";
 
 const Dashboard = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -40,6 +44,8 @@ const Dashboard = () => {
   const [showBudgetDialog, setShowBudgetDialog] = useState(false);
   const [showChatbot, setShowChatbot] = useState(false);
   const [showShortcuts, setShowShortcuts] = useState(false);
+  const [showAssetDialog, setShowAssetDialog] = useState(false);
+  const [initialLoading, setInitialLoading] = useState(true);
   const navigate = useNavigate();
   const { data: dashboardData, isLoading, refetch } = useDashboardData();
 
@@ -78,6 +84,7 @@ const Dashboard = () => {
         navigate("/auth");
       } else {
         setUser(session.user);
+        setTimeout(() => setInitialLoading(false), 1000); // Small delay for smooth transition
       }
     });
 
@@ -105,6 +112,10 @@ const Dashboard = () => {
       toast.success("Signed out successfully");
     }
   };
+
+  if (initialLoading) {
+    return <LoadingScreen />;
+  }
 
   if (!user) return null;
 
@@ -155,97 +166,115 @@ const Dashboard = () => {
           </Button>
         </div>
 
-        <QuickStats
-          netWorth={dashboardData?.netWorth || 0}
-          monthlyIncome={dashboardData?.monthlyIncome || 0}
-          monthlyExpenses={dashboardData?.monthlyExpenses || 0}
-          savingsRate={dashboardData?.savingsRate || 0}
-        />
+        {isLoading ? (
+          <DashboardSkeleton />
+        ) : (
+          <>
+            <QuickStats
+              netWorth={dashboardData?.netWorth || 0}
+              monthlyIncome={dashboardData?.monthlyIncome || 0}
+              monthlyExpenses={dashboardData?.monthlyExpenses || 0}
+              savingsRate={dashboardData?.savingsRate || 0}
+              totalIncome={dashboardData?.totalIncome || 0}
+              totalExpenses={dashboardData?.totalExpenses || 0}
+              averageSavingsRate={dashboardData?.averageSavingsRate || 0}
+              currency="INR"
+            />
 
-        <div className="mb-8">
-          <AdvancedCharts
-            monthlyTrend={dashboardData?.monthlyTrend}
-            categoryBreakdown={dashboardData?.categoryBreakdown}
-          />
-        </div>
+            <div className="mb-8">
+              <WalletManagement />
+            </div>
 
-        <div className="mb-8">
-          <RecentTransactions transactions={dashboardData?.recentTransactions} />
-        </div>
+            <div className="mb-8">
+              <AdvancedCharts
+                monthlyTrend={dashboardData?.monthlyTrend}
+                categoryBreakdown={dashboardData?.categoryBreakdown}
+              />
+            </div>
 
-        <div className="mb-8">
-          {/* Family overview by member */}
-          {/* @ts-ignore - runtime data shape enforced */}
-          <FamilyOverview items={dashboardData?.familySummary || []} />
-        </div>
+            <div className="mb-8">
+              <RecentTransactions transactions={dashboardData?.recentTransactions} />
+            </div>
 
-        <div className="grid gap-6 md:grid-cols-2 mb-8">
-          <UserProfile />
-          <SecurityMonitor />
-        </div>
+            <div className="mb-8">
+              {/* Family overview by member */}
+              {/* @ts-ignore - runtime data shape enforced */}
+              <FamilyOverview items={dashboardData?.familySummary || []} />
+            </div>
 
-        <div className="mb-8">
-          <Achievements />
-        </div>
+            <div className="grid gap-6 md:grid-cols-2 mb-8">
+              <UserProfile />
+              <SecurityMonitor />
+            </div>
 
-        <div className="mb-8">
-          <AdSense slot="1234567890" format="horizontal" className="my-8" />
-        </div>
+            <div className="mb-8">
+              <Achievements />
+            </div>
 
-        <div className="grid gap-6 lg:grid-cols-3 mb-8">
-          <div className="lg:col-span-2">
-            <MarketHoldings />
-          </div>
-          <div className="space-y-6">
-            <NewsWidget />
-            <NotesWidget />
-          </div>
-        </div>
+            <div className="mb-8">
+              <AdSense slot="1234567890" format="horizontal" className="my-8" />
+            </div>
 
-        <div className="grid gap-6 lg:grid-cols-2 mb-8">
-          <FinancialTips />
-          <RealityCheck />
-        </div>
+            <div className="grid gap-6 lg:grid-cols-3 mb-8">
+              <div className="lg:col-span-2">
+                <MarketHoldings />
+              </div>
+              <div className="space-y-6">
+                <NewsWidget />
+                <NotesWidget />
+              </div>
+            </div>
 
-        <div className="mb-8">
-          <AdSense slot="0987654321" format="auto" />
-        </div>
+            <div className="grid gap-6 lg:grid-cols-2 mb-8">
+              <FinancialTips />
+              <RealityCheck />
+            </div>
 
-        <div className="mb-8">
-          <PreciousMetals />
-        </div>
+            <div className="mb-8">
+              <AdSense slot="0987654321" format="auto" />
+            </div>
 
-        <div className="mb-8">
-          <OrderTracking />
-        </div>
+            <div className="mb-8">
+              <PreciousMetals />
+            </div>
 
-        <Card className="shadow-card animate-fade-in">
-          <CardHeader>
-            <CardTitle>Quick Actions</CardTitle>
-            <CardDescription>Manage your finances efficiently</CardDescription>
-          </CardHeader>
-          <CardContent className="flex flex-wrap gap-4">
-            <Button className="gap-2 hover:scale-105 transition-transform" onClick={() => setShowAddTransaction(true)}>
-              <Plus className="h-4 w-4" />
-              Add Transaction
-            </Button>
-            <Button variant="outline" className="gap-2 hover:scale-105 transition-transform" onClick={() => toast.info("Bank connection coming soon!")}>
-              <LinkIcon className="h-4 w-4" />
-              Connect Bank Account
-            </Button>
-            <Button variant="outline" className="gap-2 hover:scale-105 transition-transform" onClick={() => setShowBudgetDialog(true)}>
-              Set Budget
-            </Button>
-            <Button variant="outline" className="gap-2 hover:scale-105 transition-transform" onClick={() => navigate("/family")}>
-              <Users className="h-4 w-4" />
-              Manage Family
-            </Button>
-              <Button variant="outline" className="gap-2 hover:scale-105 transition-transform" onClick={() => setShowShortcuts(true)}>
-                <Keyboard className="h-4 w-4" />
-                Keyboard Shortcuts
-              </Button>
-          </CardContent>
-        </Card>
+            <div className="mb-8">
+              <OrderTracking />
+            </div>
+
+            <Card className="shadow-card animate-fade-in">
+              <CardHeader>
+                <CardTitle>Quick Actions</CardTitle>
+                <CardDescription>Manage your finances efficiently</CardDescription>
+              </CardHeader>
+              <CardContent className="flex flex-wrap gap-4">
+                <Button className="gap-2 hover:scale-105 transition-transform" onClick={() => setShowAddTransaction(true)}>
+                  <Plus className="h-4 w-4" />
+                  Add Transaction
+                </Button>
+                <Button className="gap-2 hover:scale-105 transition-transform" onClick={() => setShowAssetDialog(true)}>
+                  <TrendingUp className="h-4 w-4" />
+                  Add Asset
+                </Button>
+                <Button variant="outline" className="gap-2 hover:scale-105 transition-transform" onClick={() => toast.info("Bank connection coming soon!")}>
+                  <LinkIcon className="h-4 w-4" />
+                  Connect Bank Account
+                </Button>
+                <Button variant="outline" className="gap-2 hover:scale-105 transition-transform" onClick={() => setShowBudgetDialog(true)}>
+                  Set Budget
+                </Button>
+                <Button variant="outline" className="gap-2 hover:scale-105 transition-transform" onClick={() => navigate("/family")}>
+                  <Users className="h-4 w-4" />
+                  Manage Family
+                </Button>
+                  <Button variant="outline" className="gap-2 hover:scale-105 transition-transform" onClick={() => setShowShortcuts(true)}>
+                    <Keyboard className="h-4 w-4" />
+                    Keyboard Shortcuts
+                  </Button>
+              </CardContent>
+            </Card>
+          </>
+        )}
 
         <AddTransactionDialog
           open={showAddTransaction}
@@ -256,6 +285,12 @@ const Dashboard = () => {
         <BudgetDialog
           open={showBudgetDialog}
           onOpenChange={setShowBudgetDialog}
+          onSuccess={() => refetch()}
+        />
+
+        <UnifiedAssetDialog
+          open={showAssetDialog}
+          onOpenChange={setShowAssetDialog}
           onSuccess={() => refetch()}
         />
 

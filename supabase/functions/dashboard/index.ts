@@ -51,6 +51,12 @@ serve(async (req) => {
       .gte('timestamp', sixMonthsAgo.toISOString())
       .order('timestamp', { ascending: true });
 
+    // Fetch all transactions for totals
+    const { data: allTransactions } = await supabaseClient
+      .from('transactions')
+      .select('*')
+      .eq('user_id', user.id);
+
     // Fetch all accounts
     const { data: accounts } = await supabaseClient
       .from('accounts')
@@ -200,6 +206,12 @@ serve(async (req) => {
         monthlyIncome: income,
         monthlyExpenses: expenses,
         savingsRate,
+        totalIncome: allTransactions?.filter(t => t.type === 'income').reduce((sum, t) => sum + Number(t.amount), 0) || 0,
+        totalExpenses: allTransactions?.filter(t => t.type === 'expense').reduce((sum, t) => sum + Number(t.amount), 0) || 0,
+        averageSavingsRate: monthlyTrend.length > 0 ? monthlyTrend.reduce((sum, m) => {
+          const rate = m.income > 0 ? ((m.income - m.expenses) / m.income) * 100 : 0;
+          return sum + rate;
+        }, 0) / monthlyTrend.length : 0,
         categoryBreakdown,
         cashflowSparkline,
         transactionCount: recentTransactions?.length || 0,

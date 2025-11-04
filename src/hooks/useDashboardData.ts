@@ -6,6 +6,9 @@ interface DashboardData {
   monthlyIncome: number;
   monthlyExpenses: number;
   savingsRate: number;
+  totalIncome: number;
+  totalExpenses: number;
+  averageSavingsRate: number;
   recentTransactions: Array<{
     id: string;
     amount: number;
