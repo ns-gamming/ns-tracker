@@ -187,6 +187,72 @@ export type Database = {
         }
         Relationships: []
       }
+      bills: {
+        Row: {
+          amount: number
+          auto_pay: boolean | null
+          bill_name: string
+          category: string
+          created_at: string | null
+          currency: string | null
+          due_date: string
+          frequency: string
+          id: string
+          last_paid_date: string | null
+          merchant: string | null
+          metadata: Json | null
+          next_due_date: string | null
+          notes: string | null
+          payment_method: string | null
+          reminder_days_before: number | null
+          status: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          auto_pay?: boolean | null
+          bill_name: string
+          category: string
+          created_at?: string | null
+          currency?: string | null
+          due_date: string
+          frequency: string
+          id?: string
+          last_paid_date?: string | null
+          merchant?: string | null
+          metadata?: Json | null
+          next_due_date?: string | null
+          notes?: string | null
+          payment_method?: string | null
+          reminder_days_before?: number | null
+          status?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          auto_pay?: boolean | null
+          bill_name?: string
+          category?: string
+          created_at?: string | null
+          currency?: string | null
+          due_date?: string
+          frequency?: string
+          id?: string
+          last_paid_date?: string | null
+          merchant?: string | null
+          metadata?: Json | null
+          next_due_date?: string | null
+          notes?: string | null
+          payment_method?: string | null
+          reminder_days_before?: number | null
+          status?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       budgets: {
         Row: {
           amount: number
@@ -833,6 +899,7 @@ export type Database = {
           exit_page: boolean | null
           id: string
           interactions_count: number | null
+          ip_hash: string | null
           page_path: string
           referrer: string | null
           scroll_depth_percent: number | null
@@ -845,6 +912,7 @@ export type Database = {
           exit_page?: boolean | null
           id?: string
           interactions_count?: number | null
+          ip_hash?: string | null
           page_path: string
           referrer?: string | null
           scroll_depth_percent?: number | null
@@ -857,6 +925,7 @@ export type Database = {
           exit_page?: boolean | null
           id?: string
           interactions_count?: number | null
+          ip_hash?: string | null
           page_path?: string
           referrer?: string | null
           scroll_depth_percent?: number | null

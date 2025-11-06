@@ -51,16 +51,20 @@ export const useAnalytics = () => {
 
       const pagePath = window.location.pathname;
       
-      await supabase.from("user_activity_logs").insert({
-        user_id: user.id,
-        event_type: eventData.eventType,
-        event_category: eventData.eventCategory,
-        event_action: eventData.eventAction,
-        event_label: eventData.eventLabel,
-        page_path: pagePath,
-        metadata: eventData.metadata || {},
-        user_agent: navigator.userAgent,
-        session_id: getSessionId(),
+      // Use edge function to track with IP hash
+      await supabase.functions.invoke("track-activity", {
+        body: {
+          eventType: eventData.eventType,
+          eventCategory: eventData.eventCategory,
+          eventAction: eventData.eventAction,
+          eventLabel: eventData.eventLabel,
+          pagePath,
+          metadata: {
+            ...eventData.metadata,
+            sessionId: getSessionId(),
+            userAgent: navigator.userAgent,
+          },
+        },
       });
     } catch (error) {
       console.error("Analytics tracking error:", error);

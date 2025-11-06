@@ -24,6 +24,7 @@ import { FamilyOverview } from "@/components/FamilyOverview";
 import { BudgetAlerts } from "@/components/BudgetAlerts";
 import { SmartAlerts } from "@/components/SmartAlerts";
 import { AnalyticsDashboard } from "@/components/AnalyticsDashboard";
+import { BillReminders } from "@/components/BillReminders";
 import { MarketHoldings } from "@/components/MarketHoldings";
 import { UserProfile } from "@/components/UserProfile";
 import { OrderTracking } from "@/components/OrderTracking";
@@ -190,6 +191,7 @@ const Dashboard = () => {
               <div className="lg:col-span-2 space-y-6">
                 <SmartAlerts />
                 <BudgetAlerts />
+                <BillReminders />
               </div>
               <div className="space-y-6">
                 <RecentTransactions transactions={dashboardData?.recentTransactions} />

@@ -169,7 +169,7 @@ export const QuickStats = ({
 
   return (
     <>
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-8">
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 mb-8">
         {stats.slice(0, 4).map((stat, index) => {
           const Icon = stat.icon;
           const BadgeIcon = stat.badge.icon;
@@ -177,32 +177,44 @@ export const QuickStats = ({
           return (
             <Card 
               key={stat.id}
-              className="shadow-card hover:shadow-medium transition-all hover:scale-105 animate-fade-in-up cursor-pointer group"
-              style={{ animationDelay: `${index * 0.1}s` }}
+              className="relative overflow-hidden border-0 shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 animate-fade-in-up cursor-pointer group"
+              style={{ 
+                animationDelay: `${index * 0.1}s`,
+                background: `linear-gradient(135deg, hsl(var(--card)) 0%, hsl(var(--card)/${0.95 - index * 0.05}) 100%)`
+              }}
               onClick={() => setSelectedCard(stat.id)}
             >
-              <CardHeader className="pb-3 flex flex-row items-center justify-between">
-                <div className="space-y-1">
-                  <p className="text-sm text-muted-foreground">{stat.title}</p>
-                  <CardTitle className={`text-3xl tabular-nums ${stat.textColor}`}>
+              {/* Gradient overlay */}
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              
+              {/* Decorative circle */}
+              <div className={`absolute -right-8 -top-8 h-32 w-32 rounded-full ${stat.bgColor} opacity-10 group-hover:scale-150 transition-transform duration-700`} />
+              
+              <CardHeader className="pb-2 relative z-10">
+                <div className="flex items-center justify-between mb-4">
+                  <Badge variant={stat.badge.variant} className={`text-xs ${stat.badge.className || ''} backdrop-blur-sm`}>
+                    <BadgeIcon className="h-3 w-3 mr-1" />
+                    {stat.badge.text}
+                  </Badge>
+                  <div className={`h-14 w-14 rounded-2xl ${stat.bgColor} flex items-center justify-center group-hover:rotate-12 group-hover:scale-110 transition-all duration-500 shadow-lg`}>
+                    <Icon className={`h-7 w-7 ${stat.textColor}`} />
+                  </div>
+                </div>
+                <p className="text-sm font-medium text-muted-foreground uppercase tracking-wide">{stat.title}</p>
+              </CardHeader>
+              <CardContent className="relative z-10">
+                <div className="space-y-2">
+                  <div className={`text-4xl font-black tabular-nums ${stat.textColor} group-hover:scale-105 transition-transform origin-left`}>
                     {stat.isPercentage 
                       ? `${stat.value.toFixed(0)}%`
                       : formatCurrency(stat.value)
                     }
-                  </CardTitle>
-                </div>
-                <div className={`h-12 w-12 rounded-full ${stat.bgColor} flex items-center justify-center group-hover:scale-110 transition-transform`}>
-                  <Icon className={`h-6 w-6 ${stat.textColor}`} />
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="flex items-center gap-2">
-                  <Badge variant={stat.badge.variant} className={`text-xs ${stat.badge.className || ''}`}>
-                    <BadgeIcon className="h-3 w-3 mr-1" />
-                    {stat.badge.text}
-                  </Badge>
+                  </div>
                   {stat.delta && (
-                    <span className="text-xs text-muted-foreground">{stat.delta}</span>
+                    <div className="flex items-center gap-2">
+                      <span className={`text-sm font-semibold ${stat.textColor}`}>{stat.delta}</span>
+                      <span className="text-xs text-muted-foreground">vs last month</span>
+                    </div>
                   )}
                 </div>
               </CardContent>
@@ -211,7 +223,7 @@ export const QuickStats = ({
         })}
       </div>
 
-      <div className="grid gap-4 md:grid-cols-3 mb-8">
+      <div className="grid gap-6 md:grid-cols-3 mb-8">
         {stats.slice(4).map((stat, index) => {
           const Icon = stat.icon;
           const BadgeIcon = stat.badge.icon;
@@ -219,29 +231,35 @@ export const QuickStats = ({
           return (
             <Card 
               key={stat.id}
-              className="shadow-card hover:shadow-medium transition-all hover:scale-105 animate-fade-in-up cursor-pointer group"
-              style={{ animationDelay: `${(index + 4) * 0.1}s` }}
+              className="relative overflow-hidden border-0 shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 animate-fade-in-up cursor-pointer group"
+              style={{ 
+                animationDelay: `${(index + 4) * 0.1}s`,
+                background: `linear-gradient(135deg, hsl(var(--card)) 0%, hsl(var(--card)/0.9) 100%)`
+              }}
               onClick={() => setSelectedCard(stat.id)}
             >
-              <CardHeader className="pb-3 flex flex-row items-center justify-between">
-                <div className="space-y-1">
-                  <p className="text-sm text-muted-foreground">{stat.title}</p>
-                  <CardTitle className={`text-2xl tabular-nums ${stat.textColor}`}>
-                    {stat.isPercentage 
-                      ? `${stat.value.toFixed(0)}%`
-                      : formatCurrency(stat.value)
-                    }
-                  </CardTitle>
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              <div className={`absolute -right-6 -top-6 h-24 w-24 rounded-full ${stat.bgColor} opacity-10 group-hover:scale-150 transition-transform duration-700`} />
+              
+              <CardHeader className="pb-2 relative z-10">
+                <div className="flex items-center justify-between mb-3">
+                  <Badge variant={stat.badge.variant} className={`text-xs ${stat.badge.className || ''} backdrop-blur-sm`}>
+                    <BadgeIcon className="h-3 w-3 mr-1" />
+                    {stat.badge.text}
+                  </Badge>
+                  <div className={`h-12 w-12 rounded-xl ${stat.bgColor} flex items-center justify-center group-hover:rotate-12 group-hover:scale-110 transition-all duration-500 shadow-md`}>
+                    <Icon className={`h-6 w-6 ${stat.textColor}`} />
+                  </div>
                 </div>
-                <div className={`h-10 w-10 rounded-full ${stat.bgColor} flex items-center justify-center group-hover:scale-110 transition-transform`}>
-                  <Icon className={`h-5 w-5 ${stat.textColor}`} />
-                </div>
+                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">{stat.title}</p>
               </CardHeader>
-              <CardContent>
-                <Badge variant={stat.badge.variant} className={`text-xs ${stat.badge.className || ''}`}>
-                  <BadgeIcon className="h-3 w-3 mr-1" />
-                  {stat.badge.text}
-                </Badge>
+              <CardContent className="relative z-10">
+                <div className={`text-3xl font-black tabular-nums ${stat.textColor} group-hover:scale-105 transition-transform origin-left`}>
+                  {stat.isPercentage 
+                    ? `${stat.value.toFixed(0)}%`
+                    : formatCurrency(stat.value)
+                  }
+                </div>
               </CardContent>
             </Card>
           );
