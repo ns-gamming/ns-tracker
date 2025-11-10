@@ -139,8 +139,8 @@ export const AddTransactionDialog = ({ open, onOpenChange, onSuccess }: AddTrans
           currency: formData.currency,
           timestamp: new Date(formData.date).toISOString(),
           category_id: formData.category_id || null,
-          family_member_id: formData.family_member_id || null,
-          payment_source: formData.payment_source || null,
+          family_member_id: formData.family_member_id && formData.family_member_id !== "none" ? formData.family_member_id : null,
+          payment_source: formData.payment_source && formData.payment_source !== "none" ? formData.payment_source : null,
         },
       });
 
@@ -303,7 +303,7 @@ export const AddTransactionDialog = ({ open, onOpenChange, onSuccess }: AddTrans
                     </div>
                   ) : (
                     <div className="p-1">
-                      <SelectItem value="" className="cursor-pointer hover:bg-accent focus:bg-accent rounded-md my-0.5 h-10">
+                      <SelectItem value="none" className="cursor-pointer hover:bg-accent focus:bg-accent rounded-md my-0.5 h-10">
                         <span className="text-muted-foreground">None (Personal)</span>
                       </SelectItem>
                       {members.map((m) => (
@@ -347,7 +347,7 @@ export const AddTransactionDialog = ({ open, onOpenChange, onSuccess }: AddTrans
                   <SelectValue placeholder="Select payment source" />
                 </SelectTrigger>
                 <SelectContent className="bg-popover border-border z-[100]">
-                  <SelectItem value="">None</SelectItem>
+                  <SelectItem value="none">None</SelectItem>
                   <SelectItem value="bank">🏦 Bank Account</SelectItem>
                   <SelectItem value="wallet">💳 Wallet</SelectItem>
                   <SelectItem value="binance">🔶 Binance</SelectItem>
