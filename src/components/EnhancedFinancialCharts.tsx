@@ -133,42 +133,42 @@ export const EnhancedFinancialCharts = ({ monthlyTrend = [], categoryBreakdown =
     <div className="space-y-6">
       {/* Statistics Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card className="shadow-card hover-lift">
+        <Card className="shadow-card card-hover-effect glass-effect animate-slide-in-up" style={{ animationDelay: "0.1s" }}>
           <CardHeader className="pb-2">
             <CardDescription className="flex items-center gap-2 text-xs">
-              <TrendingUp className="w-4 h-4 text-success" />
+              <TrendingUp className="w-4 h-4 text-success animate-bounce-subtle" />
               Avg Income
             </CardDescription>
-            <CardTitle className="text-xl text-success">₹{avgIncome.toFixed(0)}</CardTitle>
+            <CardTitle className="text-xl text-success font-bold">₹{avgIncome.toFixed(0)}</CardTitle>
           </CardHeader>
         </Card>
-        <Card className="shadow-card hover-lift">
+        <Card className="shadow-card card-hover-effect glass-effect animate-slide-in-up" style={{ animationDelay: "0.2s" }}>
           <CardHeader className="pb-2">
             <CardDescription className="flex items-center gap-2 text-xs">
-              <TrendingDown className="w-4 h-4 text-destructive" />
+              <TrendingDown className="w-4 h-4 text-destructive animate-bounce-subtle" />
               Avg Expenses
             </CardDescription>
-            <CardTitle className="text-xl text-destructive">₹{avgExpenses.toFixed(0)}</CardTitle>
+            <CardTitle className="text-xl text-destructive font-bold">₹{avgExpenses.toFixed(0)}</CardTitle>
           </CardHeader>
         </Card>
-        <Card className="shadow-card hover-lift">
+        <Card className="shadow-card card-hover-effect glass-effect animate-slide-in-up" style={{ animationDelay: "0.3s" }}>
           <CardHeader className="pb-2">
             <CardDescription className="flex items-center gap-2 text-xs">
-              <DollarSign className="w-4 h-4 text-primary" />
+              <DollarSign className="w-4 h-4 text-primary animate-bounce-subtle" />
               Net Savings
             </CardDescription>
-            <CardTitle className={`text-xl ${stats.netSavings >= 0 ? 'text-success' : 'text-destructive'}`}>
+            <CardTitle className={`text-xl font-bold ${stats.netSavings >= 0 ? 'text-success' : 'text-destructive'}`}>
               ₹{stats.netSavings.toFixed(0)}
             </CardTitle>
           </CardHeader>
         </Card>
-        <Card className="shadow-card hover-lift">
+        <Card className="shadow-card card-hover-effect glass-effect animate-slide-in-up" style={{ animationDelay: "0.4s" }}>
           <CardHeader className="pb-2">
             <CardDescription className="flex items-center gap-2 text-xs">
-              <Percent className="w-4 h-4 text-primary" />
+              <Percent className="w-4 h-4 text-primary animate-bounce-subtle" />
               Savings Rate
             </CardDescription>
-            <CardTitle className="text-xl text-primary">{savingsRate.toFixed(1)}%</CardTitle>
+            <CardTitle className="text-xl text-primary font-bold">{savingsRate.toFixed(1)}%</CardTitle>
           </CardHeader>
         </Card>
       </div>
@@ -254,10 +254,11 @@ export const EnhancedFinancialCharts = ({ monthlyTrend = [], categoryBreakdown =
 
       <div className="grid gap-6 md:grid-cols-2">
         {monthlyTrend.length > 0 && (
-          <Card className="shadow-card hover-scale animate-fade-in transition-all duration-300">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                📈 Income vs Expenses
+          <Card className="shadow-card card-hover-effect glass-effect animate-slide-in-left transition-all duration-500" style={{ animationDelay: "0.5s" }}>
+            <CardHeader className="border-b border-border/50">
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <span className="text-2xl animate-bounce-subtle">📈</span>
+                <span className="bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">Income vs Expenses</span>
               </CardTitle>
               <CardDescription>Trend analysis - {granularity}</CardDescription>
             </CardHeader>
@@ -344,10 +345,11 @@ export const EnhancedFinancialCharts = ({ monthlyTrend = [], categoryBreakdown =
         )}
 
         {categoryBreakdown.length > 0 && (
-          <Card className="shadow-card hover-scale animate-fade-in transition-all duration-300">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                🎯 Spending by Category
+          <Card className="shadow-card card-hover-effect glass-effect animate-slide-in-right transition-all duration-500" style={{ animationDelay: "0.5s" }}>
+            <CardHeader className="border-b border-border/50">
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <span className="text-2xl animate-bounce-subtle">🎯</span>
+                <span className="bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">Spending by Category</span>
               </CardTitle>
               <CardDescription>This period's breakdown</CardDescription>
             </CardHeader>

@@ -126,24 +126,30 @@ const Dashboard = () => {
   if (!user) return null;
 
   return (
-    <div className="min-h-screen bg-background">
-      <header className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-50">
+    <div className="min-h-screen bg-background relative overflow-hidden">
+      {/* Animated Background */}
+      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-0 -left-20 w-96 h-96 bg-primary/5 rounded-full blur-3xl animate-float"></div>
+        <div className="absolute bottom-0 -right-20 w-96 h-96 bg-success/5 rounded-full blur-3xl animate-float" style={{ animationDelay: "2s" }}></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-primary/3 rounded-full blur-3xl animate-pulse" style={{ animationDelay: "4s" }}></div>
+      </div>
+
+      <header className="border-b border-border glass-effect sticky top-0 z-50 animate-slide-in-up">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="relative h-10 w-10 flex-shrink-0">
-                <div className="h-full w-full rounded-full overflow-hidden bg-white shadow-md ring-2 ring-primary/20">
+              <div className="relative h-12 w-12 flex-shrink-0">
+                <div className="absolute inset-0 bg-primary/20 rounded-full blur-md animate-pulse"></div>
+                <div className="h-full w-full rounded-full overflow-hidden bg-white shadow-lg ring-2 ring-primary/30 relative z-10">
                   <img 
                     src={logoImage} 
                     alt="NS FinSight" 
-                    className="h-full w-full object-cover scale-110"
-                    onError={(e) => {
-                      e.currentTarget.style.display = 'none';
-                    }}
+                    className="h-full w-full object-contain p-1"
+                    loading="eager"
                   />
                 </div>
               </div>
-              <span className="text-xl font-bold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
+              <span className="text-xl font-bold bg-gradient-to-r from-primary via-primary/90 to-success bg-clip-text text-transparent animate-gradient-shift bg-[length:200%_auto]">
                 NS FinSight
               </span>
             </div>
@@ -169,11 +175,11 @@ const Dashboard = () => {
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-8">
-        <div className="mb-8 flex items-center justify-between">
+      <main className="container mx-auto px-4 py-8 relative z-10">
+        <div className="mb-8 flex items-center justify-between animate-slide-in-left">
           <div>
-            <h2 className="text-3xl font-bold mb-2">Welcome back!</h2>
-            <p className="text-muted-foreground">Here's your financial overview</p>
+            <h2 className="text-3xl font-bold mb-2 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">Welcome back!</h2>
+            <p className="text-muted-foreground text-lg">Here's your financial overview</p>
           </div>
           <Button variant="outline" size="icon" onClick={() => refetch()} disabled={isLoading}>
             <RefreshCw className={`h-4 w-4 ${isLoading ? "animate-spin" : ""}`} />
@@ -184,28 +190,39 @@ const Dashboard = () => {
           <DashboardSkeleton />
         ) : (
           <>
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 animate-fade-in">
-              <QuickStats
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              <div className="animate-slide-in-up" style={{ animationDelay: "0.1s" }}>
                 netWorth={dashboardData?.netWorth || 0}
-                monthlyIncome={dashboardData?.monthlyIncome || 0}
-                monthlyExpenses={dashboardData?.monthlyExpenses || 0}
-                savingsRate={dashboardData?.savingsRate || 0}
-                totalIncome={dashboardData?.totalIncome || 0}
-                totalExpenses={dashboardData?.totalExpenses || 0}
-                averageSavingsRate={dashboardData?.averageSavingsRate || 0}
-                currency="INR"
-              />
+                  monthlyIncome={dashboardData?.monthlyIncome || 0}
+                  monthlyExpenses={dashboardData?.monthlyExpenses || 0}
+                  savingsRate={dashboardData?.savingsRate || 0}
+                  totalIncome={dashboardData?.totalIncome || 0}
+                  totalExpenses={dashboardData?.totalExpenses || 0}
+                  averageSavingsRate={dashboardData?.averageSavingsRate || 0}
+                  currency="INR"
+                />
+              </div>
             </div>
 
-            <div className="grid gap-6 lg:grid-cols-3 mb-8 animate-fade-in" style={{ animationDelay: "100ms" }}>
+            <div className="grid gap-6 lg:grid-cols-3 mb-8">
               <div className="lg:col-span-2 space-y-6">
-                <RealTimeAlerts />
-                <SmartAlerts />
-                <BudgetAlerts />
-                <BillReminders />
+                <div className="animate-slide-in-left" style={{ animationDelay: "0.2s" }}>
+                  <RealTimeAlerts />
+                </div>
+                <div className="animate-slide-in-left" style={{ animationDelay: "0.3s" }}>
+                  <SmartAlerts />
+                </div>
+                <div className="animate-slide-in-left" style={{ animationDelay: "0.4s" }}>
+                  <BudgetAlerts />
+                </div>
+                <div className="animate-slide-in-left" style={{ animationDelay: "0.5s" }}>
+                  <BillReminders />
+                </div>
               </div>
               <div className="space-y-6">
-                <RecentTransactions transactions={dashboardData?.recentTransactions} />
+                <div className="animate-slide-in-right" style={{ animationDelay: "0.2s" }}>
+                  <RecentTransactions transactions={dashboardData?.recentTransactions} />
+                </div>
               </div>
             </div>
 

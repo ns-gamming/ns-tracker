@@ -131,11 +131,8 @@ const Auth = () => {
                 <img 
                   src={logoImage} 
                   alt="NS FinSight" 
-                  className="h-full w-full object-cover scale-110"
-                  onError={(e) => {
-                    console.error('Logo failed to load');
-                    e.currentTarget.style.display = 'none';
-                  }}
+                  className="h-full w-full object-contain p-2"
+                  loading="eager"
                 />
               </div>
             </div>

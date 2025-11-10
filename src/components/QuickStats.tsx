@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { TrendingUp, TrendingDown, DollarSign, Target, Calendar, Zap, ArrowUpRight, ArrowDownRight, PiggyBank } from "lucide-react";
 import { useEffect, useState } from "react";
+import { cn } from "@/lib/utils";
 
 interface QuickStatsProps {
   netWorth: number;
@@ -16,10 +17,10 @@ interface QuickStatsProps {
   currency?: string;
 }
 
-export const QuickStats = ({ 
-  netWorth, 
-  monthlyIncome, 
-  monthlyExpenses, 
+export const QuickStats = ({
+  netWorth,
+  monthlyIncome,
+  monthlyExpenses,
   savingsRate,
   totalIncome = 0,
   totalExpenses = 0,
@@ -126,7 +127,7 @@ export const QuickStats = ({
       bgColor: "bg-primary/10",
       textColor: "text-primary",
       isPercentage: true,
-      badge: savingsChange === 'positive' 
+      badge: savingsChange === 'positive'
         ? { icon: TrendingUp, text: "Good", variant: "default" as const, className: "bg-success/10 text-success border-success/30" }
         : { icon: TrendingDown, text: "Improve", variant: "default" as const, className: "bg-warning/10 text-warning border-warning/30" },
       description: `Savings rate = (Income – Expense) ÷ Income × 100. You saved ${formatCurrency(Math.abs(savings))}`
@@ -175,11 +176,13 @@ export const QuickStats = ({
           const BadgeIcon = stat.badge.icon;
 
           return (
-            <Card 
+            <Card
               key={stat.id}
-              className="relative overflow-hidden border-0 shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 animate-fade-in-up cursor-pointer group"
-              style={{ 
-                animationDelay: `${index * 0.1}s`,
+              className={cn(
+                "shadow-card card-hover-effect glass-effect animate-glow-pulse transition-all duration-300",
+                stat.bgColor
+              )}
+              style={{ animationDelay: `${index * 0.1}s`,
                 background: `linear-gradient(135deg, hsl(var(--card)) 0%, hsl(var(--card)/${0.95 - index * 0.05}) 100%)`
               }}
               onClick={() => setSelectedCard(stat.id)}
@@ -190,25 +193,28 @@ export const QuickStats = ({
               {/* Decorative circle */}
               <div className={`absolute -right-8 -top-8 h-32 w-32 rounded-full ${stat.bgColor} opacity-10 group-hover:scale-150 transition-transform duration-700`} />
 
-              <CardHeader className="pb-2 relative z-10">
+              <CardHeader className="pb-3">
                 <div className="flex items-center justify-between mb-4">
                   <Badge variant={stat.badge.variant} className={`text-xs ${stat.badge.className || ''} backdrop-blur-sm`}>
                     <BadgeIcon className="h-3 w-3 mr-1" />
                     {stat.badge.text}
                   </Badge>
-                  <div className={`h-14 w-14 rounded-2xl ${stat.bgColor} flex items-center justify-center group-hover:rotate-12 group-hover:scale-110 transition-all duration-500 shadow-lg`}>
+                  <div className={`h-14 w-14 rounded-2xl animate-bounce-subtle ${stat.bgColor} flex items-center justify-center group-hover:rotate-12 group-hover:scale-110 transition-all duration-500 shadow-lg`}>
                     <Icon className={`h-7 w-7 ${stat.textColor}`} />
                   </div>
                 </div>
                 <p className="text-sm font-medium text-muted-foreground uppercase tracking-wide">{stat.title}</p>
               </CardHeader>
-              <CardContent className="relative z-10">
+              <CardContent>
                 <div className="space-y-2">
-                  <div className={`text-4xl font-black tabular-nums ${stat.textColor} group-hover:scale-105 transition-transform origin-left`}>
-                    {stat.isPercentage 
-                      ? `${stat.value.toFixed(0)}%`
-                      : formatCurrency(stat.value)
-                    }
+                  <div className={`text-4xl font-black tabular-nums ${stat.textColor} group-hover:scale-105 transition-transform origin-left relative`}>
+                    <span className="relative z-10">
+                      {stat.isPercentage
+                        ? `${stat.value.toFixed(0)}%`
+                        : formatCurrency(stat.value)
+                      }
+                    </span>
+                    <div className="absolute inset-0 animate-shimmer"></div>
                   </div>
                   {stat.delta && (
                     <div className="flex items-center gap-2">
@@ -229,11 +235,13 @@ export const QuickStats = ({
           const BadgeIcon = stat.badge.icon;
 
           return (
-            <Card 
+            <Card
               key={stat.id}
-              className="relative overflow-hidden border-0 shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 animate-fade-in-up cursor-pointer group"
-              style={{ 
-                animationDelay: `${(index + 4) * 0.1}s`,
+              className={cn(
+                "shadow-card card-hover-effect glass-effect animate-glow-pulse transition-all duration-300",
+                stat.bgColor
+              )}
+              style={{ animationDelay: `${(index + 4) * 0.1}s`,
                 background: `linear-gradient(135deg, hsl(var(--card)) 0%, hsl(var(--card)/0.9) 100%)`
               }}
               onClick={() => setSelectedCard(stat.id)}
@@ -241,24 +249,27 @@ export const QuickStats = ({
               <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               <div className={`absolute -right-6 -top-6 h-24 w-24 rounded-full ${stat.bgColor} opacity-10 group-hover:scale-150 transition-transform duration-700`} />
 
-              <CardHeader className="pb-2 relative z-10">
+              <CardHeader className="pb-2">
                 <div className="flex items-center justify-between mb-3">
                   <Badge variant={stat.badge.variant} className={`text-xs ${stat.badge.className || ''} backdrop-blur-sm`}>
                     <BadgeIcon className="h-3 w-3 mr-1" />
                     {stat.badge.text}
                   </Badge>
-                  <div className={`h-12 w-12 rounded-xl ${stat.bgColor} flex items-center justify-center group-hover:rotate-12 group-hover:scale-110 transition-all duration-500 shadow-md`}>
+                  <div className={`h-12 w-12 rounded-xl animate-bounce-subtle ${stat.bgColor} flex items-center justify-center group-hover:rotate-12 group-hover:scale-110 transition-all duration-500 shadow-md`}>
                     <Icon className={`h-6 w-6 ${stat.textColor}`} />
                   </div>
                 </div>
                 <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">{stat.title}</p>
               </CardHeader>
-              <CardContent className="relative z-10">
-                <div className={`text-3xl font-black tabular-nums ${stat.textColor} group-hover:scale-105 transition-transform origin-left`}>
-                  {stat.isPercentage 
-                    ? `${stat.value.toFixed(0)}%`
-                    : formatCurrency(stat.value)
-                  }
+              <CardContent>
+                <div className={`text-3xl font-black tabular-nums ${stat.textColor} group-hover:scale-105 transition-transform origin-left relative`}>
+                  <span className="relative z-10">
+                    {stat.isPercentage
+                      ? `${stat.value.toFixed(0)}%`
+                      : formatCurrency(stat.value)
+                    }
+                  </span>
+                  <div className="absolute inset-0 animate-shimmer"></div>
                 </div>
               </CardContent>
             </Card>
@@ -294,11 +305,14 @@ export const QuickStats = ({
 
               return (
                 <div className="p-6 rounded-lg border bg-card">
-                  <div className={`text-4xl font-bold ${stat.textColor} mb-2`}>
-                    {stat.isPercentage 
-                      ? `${stat.value.toFixed(1)}%`
-                      : formatCurrency(stat.value)
-                    }
+                  <div className={`text-4xl font-bold ${stat.textColor} mb-2 relative`}>
+                    <span className="relative z-10">
+                      {stat.isPercentage
+                        ? `${stat.value.toFixed(1)}%`
+                        : formatCurrency(stat.value)
+                      }
+                    </span>
+                    <div className="absolute inset-0 animate-shimmer"></div>
                   </div>
                   <p className="text-sm text-muted-foreground">
                     {stat.title === "Net Worth" && "This includes all your accounts, investments, stocks, crypto, and assets"}
