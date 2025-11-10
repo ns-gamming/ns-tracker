@@ -1,4 +1,4 @@
-# 🌐 NS Tracker — Smart Personal Finance Dashboard
+# 🌐 NS FinSight — Smart Financial Intelligence Platform
 
 [![Repo Size](https://img.shields.io/github/repo-size/ns-gamming/ns-tracker)](https://github.com/ns-gamming/ns-tracker)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
@@ -6,18 +6,18 @@
 [![Built with React](https://img.shields.io/badge/Tech-React-blue)](#)
 [![TypeScript](https://img.shields.io/badge/TS-TypeScript-3178c6)](#)
 
-> **Short:** A fast, clean personal finance tracker — net worth, income, expenses, and savings analytics in a slick dashboard.
+> **Short:** A fast, clean financial intelligence platform — net worth, income, expenses, and savings analytics with AI-powered insights in a slick dashboard.
 
 ---
 
 ## 🚀 Live Preview
-**Website:** https://ns-finance-tracker.vercel.app/
+**Website:** https://ns-finsight.vercel.app/
 
 ---
 
-## ✨ What is NS Tracker?
+## ✨ What is NS FinSight?
 
-NS Tracker is a lightweight, modern finance dashboard to track and visualize personal finances. It focuses on clarity and speed — showing net worth, monthly income/expense breakdowns, savings rate, and summary metrics with clean UI components.
+NS FinSight is a lightweight, modern financial intelligence platform to track and visualize personal finances. It focuses on clarity and speed — showing net worth, monthly income/expense breakdowns, savings rate, and AI-powered insights with clean UI components.
 
 Perfect for personal use, demos, or as a starter template to build a full finance app.
 
@@ -46,8 +46,8 @@ ns-tracker/ ├─ public/                 # static assets ├─ src/ │  ├�
 
 ```bash
 # 1. Clone
-git clone https://github.com/ns-gamming/ns-tracker
-cd ns-tracker
+git clone https://github.com/ns-gamming/ns-finsight
+cd ns-finsight
 
 # 2. Install (use npm or pnpm/yarn)
 npm install
@@ -175,7 +175,7 @@ If you want to pick a feature from the roadmap and want help implementing it, I 
 
 🤝 Contributing
 
-Thanks for helping improve NS Tracker! Please follow these simple steps:
+Thanks for helping improve NS FinSight! Please follow these simple steps:
 
 1. Fork the repo and create a feature branch: git checkout -b feat/your-feature
 

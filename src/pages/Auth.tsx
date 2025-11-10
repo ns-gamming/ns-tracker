@@ -8,7 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import { Shield, BarChart3, Users, Lock, Sparkles, TrendingUp, Zap, CheckCircle, Eye, EyeOff } from "lucide-react";
-import logoImage from "@/assets/ns-tracker-logo.png";
+import logoImage from "@/assets/ns-finsight-logo.png";
 import authBg from "@assets/stock_images/modern_abstract_grad_aebdcbb0.jpg";
 
 const Auth = () => {
@@ -135,10 +135,10 @@ const Auth = () => {
             </div>
             <div>
               <h1 className="text-5xl font-bold bg-gradient-to-r from-primary via-primary/80 to-success bg-clip-text text-transparent">
-                NS TRACKER
+                NS FinSight
               </h1>
               <p className="text-lg text-muted-foreground mt-1">
-                Your Complete Financial Command Center
+                Your Complete Financial Intelligence Platform
               </p>
             </div>
           </div>
@@ -187,10 +187,10 @@ const Auth = () => {
             <CardHeader className="text-center space-y-2 pb-6">
               {/* Mobile Logo */}
               <div className="lg:hidden flex items-center justify-center gap-3 mb-4">
-                <img src={logoImage} alt="NS TRACKER" className="h-14 w-14 rounded-full ring-2 ring-primary shadow-lg" />
+                <img src={logoImage} alt="NS FINSIGHT" className="h-14 w-14 rounded-full ring-2 ring-primary shadow-lg" />
                 <div>
-                  <h1 className="text-2xl font-bold gradient-text">NS TRACKER</h1>
-                  <p className="text-xs text-muted-foreground">Financial Command Center</p>
+                  <h1 className="text-2xl font-bold gradient-text">NS FinSight</h1>
+                  <p className="text-xs text-muted-foreground">Financial Intelligence Platform</p>
                 </div>
               </div>
 

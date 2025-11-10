@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { Home, TrendingDown } from "lucide-react";
-import logoImage from "@/assets/ns-tracker-logo.png";
+import logoImage from "@/assets/ns-finsight-logo.png";
 
 const NotFound = () => {
   const navigate = useNavigate();
@@ -15,7 +15,7 @@ const NotFound = () => {
 
       <div className="text-center space-y-8 max-w-2xl relative z-10 animate-fade-in">
         <div className="flex justify-center mb-8">
-          <img src={logoImage} alt="NS TRACKER" className="h-24 w-24 rounded-full ring-4 ring-primary shadow-2xl animate-scale-in" />
+          <img src={logoImage} alt="NS FINSIGHT" className="h-24 w-24 rounded-full ring-4 ring-primary shadow-2xl animate-scale-in" />
         </div>
 
         <div className="relative">

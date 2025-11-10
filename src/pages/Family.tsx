@@ -13,6 +13,8 @@ import { ArrowLeft, UserPlus, Users, Calendar, Mail, Eye } from "lucide-react";
 import { FamilyInvite } from "@/components/FamilyInvite";
 import { useAnalytics } from "@/hooks/useAnalytics";
 
+// Assuming logoImage is imported from an image file path, e.g., import logoImage from '@/assets/logo.png';
+
 interface FamilyMember {
   id: string;
   name: string;

@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
 import { Shield, Lock, Eye, Database, UserCheck, FileText, ArrowLeft } from "lucide-react";
-import logoImage from "@/assets/ns-tracker-logo.png";
+import logoImage from "@/assets/ns-finsight-logo.png";
 
 const Privacy = () => {
   const navigate = useNavigate();
@@ -13,8 +13,8 @@ const Privacy = () => {
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <img src={logoImage} alt="NS TRACKER" className="h-10 w-10 rounded-full ring-2 ring-primary" />
-              <h1 className="text-xl font-bold">NS TRACKER Privacy</h1>
+              <img src={logoImage} alt="NS FINSIGHT" className="h-10 w-10 rounded-full ring-2 ring-primary" />
+              <h1 className="text-xl font-bold">NS FinSight Privacy</h1>
             </div>
             <Button variant="outline" onClick={() => navigate("/dashboard")} className="gap-2">
               <ArrowLeft className="w-4 h-4" />
@@ -165,7 +165,7 @@ const Privacy = () => {
               <p><strong>Right to Deletion:</strong> Delete your account and all associated data</p>
               <p><strong>Right to Export:</strong> Download all your data in CSV/JSON format</p>
               <p><strong>Right to Opt-Out:</strong> Disable analytics and ad personalization</p>
-              <p className="pt-2">To exercise these rights, contact us at: <strong>privacy@nstracker.app</strong></p>
+              <p className="pt-2">To exercise these rights, contact us at: <strong>privacy@nsfinsight.app</strong></p>
             </CardContent>
           </Card>
 

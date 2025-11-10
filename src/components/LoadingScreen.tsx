@@ -1,5 +1,5 @@
 import { Loader2 } from "lucide-react";
-import logoImage from "@/assets/ns-tracker-logo.png";
+import logoImage from "@/assets/ns-finsight-logo.png";
 
 export const LoadingScreen = () => {
   return (
@@ -7,7 +7,7 @@ export const LoadingScreen = () => {
       <div className="flex flex-col items-center gap-6 animate-fade-in">
         <img 
           src={logoImage} 
-          alt="NS Tracker" 
+          alt="NS FinSight" 
           className="w-20 h-20 rounded-full shadow-glow animate-pulse-slow object-cover"
         />
         <div className="flex flex-col items-center gap-2">

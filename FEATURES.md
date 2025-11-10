@@ -1,4 +1,4 @@
-# NS TRACKER - Complete Feature List
+# NS FINSIGHT - Complete Feature List
 
 ## 🎯 Quick Access Features
 

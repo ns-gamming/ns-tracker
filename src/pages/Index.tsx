@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { TrendingUp, Shield, Sparkles, BarChart3, Zap, Target, Users, ArrowRight, CheckCircle, Star, Globe, Lock, TrendingDown } from "lucide-react";
 import { useAnalytics } from "@/hooks/useAnalytics";
-import logo from "@/assets/ns-tracker-logo.png";
+import logo from "@/assets/ns-finsight-logo.png";
 import heroImage from "@assets/stock_images/professional_busines_b7850363.jpg";
 import analyticsImage from "@assets/stock_images/financial_growth_cha_7eb32286.jpg";
 import mobileImage from "@assets/stock_images/mobile_banking_app_s_8c14e23c.jpg";
@@ -80,7 +80,7 @@ const Index = () => {
     {
       name: "Priya Sharma",
       role: "Software Engineer",
-      content: "NS Tracker transformed how I manage my finances. The AI insights helped me save ₹50,000 in just 3 months!",
+      content: "NS FinSight transformed how I manage my finances. The AI insights helped me save ₹50,000 in just 3 months!",
       rating: 5
     },
     {
@@ -113,7 +113,7 @@ const Index = () => {
               className="w-14 h-14 rounded-full shadow-lg border-2 border-primary/20 group-hover:border-primary/50 transition-all group-hover:rotate-12 group-hover:scale-110 object-cover"
             />
             <span className="text-2xl font-bold bg-gradient-to-r from-primary via-primary/80 to-primary bg-clip-text text-transparent">
-              NS Tracker
+              NS FinSight
             </span>
           </div>
           <div className="flex items-center gap-4">
@@ -170,7 +170,7 @@ const Index = () => {
               data-testid="badge-ai-powered"
             >
               <Sparkles className="w-4 h-4 mr-2" />
-              AI-Powered Finance Tracking • Trusted by 10,000+ Users
+              AI-Powered Financial Insights • Trusted by 10,000+ Users
             </div>
             
             <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight animate-fade-in-up">
@@ -471,8 +471,8 @@ const Index = () => {
           <div className="grid md:grid-cols-4 gap-8 mb-8">
             <div>
               <div className="flex items-center gap-3 mb-4">
-                <img src={logo} alt="NS Tracker" className="w-10 h-10 rounded-full" />
-                <span className="font-bold text-lg">NS Tracker</span>
+                <img src={logo} alt="NS FinSight" className="w-10 h-10 rounded-full" />
+                <span className="font-bold text-lg">NS FinSight</span>
               </div>
               <p className="text-sm text-muted-foreground">
                 Your complete financial command center. Track, analyze, and optimize your financial life.
@@ -520,7 +520,7 @@ const Index = () => {
           </div>
           
           <div className="border-t border-border pt-8 text-center text-sm text-muted-foreground">
-            <p>© 2025 NS Tracker. Built with privacy and security in mind. All rights reserved.</p>
+            <p>© 2025 NS FinSight. Built with privacy and security in mind. All rights reserved.</p>
           </div>
         </div>
       </footer>
