@@ -1,5 +1,5 @@
 import { Loader2 } from "lucide-react";
-import logoImage from "@/assets/ns-finsight-logo.png";
+import logoImage from "../assets/ns-finsight-logo.png";
 
 export const LoadingScreen = () => {
   return (

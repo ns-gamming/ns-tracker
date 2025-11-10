@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
 import { Shield, Lock, Eye, Database, UserCheck, FileText, ArrowLeft } from "lucide-react";
-import logoImage from "@/assets/ns-finsight-logo.png";
+import logoImage from "../assets/ns-finsight-logo.png";
 
 const Privacy = () => {
   const navigate = useNavigate();

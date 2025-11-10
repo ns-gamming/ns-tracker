@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { Home, TrendingDown } from "lucide-react";
-import logoImage from "@/assets/ns-finsight-logo.png";
+import logoImage from "../assets/ns-finsight-logo.png";
 
 const NotFound = () => {
   const navigate = useNavigate();

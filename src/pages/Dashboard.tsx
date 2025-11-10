@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { toast } from "sonner";
 import { User } from "@supabase/supabase-js";
 import { TrendingUp, LogOut, Plus, Moon, Sun, RefreshCw, MessageSquare, Users, Link as LinkIcon, Shield, Keyboard } from "lucide-react";
-import logoImage from "@/assets/ns-finsight-logo.png";
+import logoImage from "../assets/ns-finsight-logo.png";
 import { AddTransactionDialog } from "@/components/AddTransactionDialog";
 import { FloatingActionButton } from "@/components/FloatingActionButton";
 import { BudgetDialog } from "@/components/BudgetDialog";

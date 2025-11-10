@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { TrendingUp, Shield, Sparkles, BarChart3, Zap, Target, Users, ArrowRight, CheckCircle, Star, Globe, Lock, TrendingDown } from "lucide-react";
 import { useAnalytics } from "@/hooks/useAnalytics";
-import logo from "@/assets/ns-finsight-logo.png";
+import logo from "../assets/ns-finsight-logo.png";
 import heroImage from "@assets/stock_images/professional_busines_b7850363.jpg";
 import analyticsImage from "@assets/stock_images/financial_growth_cha_7eb32286.jpg";
 import mobileImage from "@assets/stock_images/mobile_banking_app_s_8c14e23c.jpg";

@@ -8,7 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import { Shield, BarChart3, Users, Lock, Sparkles, TrendingUp, Zap, CheckCircle, Eye, EyeOff } from "lucide-react";
-import logoImage from "@/assets/ns-finsight-logo.png";
+import logoImage from "../assets/ns-finsight-logo.png";
 import authBg from "@assets/stock_images/modern_abstract_grad_aebdcbb0.jpg";
 
 const Auth = () => {
