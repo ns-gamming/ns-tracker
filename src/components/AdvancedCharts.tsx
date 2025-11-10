@@ -52,8 +52,8 @@ export const AdvancedCharts = ({ monthlyTrend = [], categoryBreakdown = [], dail
   return (
     <div className="space-y-6">
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 animate-fade-in-up">
-        <Card className="shadow-card hover:shadow-medium transition-shadow">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <Card className="shadow-card hover-lift smooth-transition animate-fade-in-up" style={{ animationDelay: '0s' }}>
           <CardHeader className="pb-3">
             <CardDescription className="flex items-center gap-2">
               <TrendingUp className="h-4 w-4 text-success" />
@@ -62,7 +62,7 @@ export const AdvancedCharts = ({ monthlyTrend = [], categoryBreakdown = [], dail
             <CardTitle className="text-2xl text-success">₹{totalIncome.toLocaleString()}</CardTitle>
           </CardHeader>
         </Card>
-        <Card className="shadow-card hover:shadow-medium transition-shadow">
+        <Card className="shadow-card hover-lift smooth-transition animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
           <CardHeader className="pb-3">
             <CardDescription className="flex items-center gap-2">
               <TrendingDown className="h-4 w-4 text-destructive" />
@@ -71,7 +71,7 @@ export const AdvancedCharts = ({ monthlyTrend = [], categoryBreakdown = [], dail
             <CardTitle className="text-2xl text-destructive">₹{totalExpenses.toLocaleString()}</CardTitle>
           </CardHeader>
         </Card>
-        <Card className="shadow-card hover:shadow-medium transition-shadow">
+        <Card className="shadow-card hover-lift smooth-transition animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
           <CardHeader className="pb-3">
             <CardDescription className="flex items-center gap-2">
               <PieChartIcon className="h-4 w-4 text-primary" />

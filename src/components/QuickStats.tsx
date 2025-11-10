@@ -173,7 +173,7 @@ export const QuickStats = ({
         {stats.slice(0, 4).map((stat, index) => {
           const Icon = stat.icon;
           const BadgeIcon = stat.badge.icon;
-          
+
           return (
             <Card 
               key={stat.id}
@@ -186,10 +186,10 @@ export const QuickStats = ({
             >
               {/* Gradient overlay */}
               <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-              
+
               {/* Decorative circle */}
               <div className={`absolute -right-8 -top-8 h-32 w-32 rounded-full ${stat.bgColor} opacity-10 group-hover:scale-150 transition-transform duration-700`} />
-              
+
               <CardHeader className="pb-2 relative z-10">
                 <div className="flex items-center justify-between mb-4">
                   <Badge variant={stat.badge.variant} className={`text-xs ${stat.badge.className || ''} backdrop-blur-sm`}>
@@ -227,7 +227,7 @@ export const QuickStats = ({
         {stats.slice(4).map((stat, index) => {
           const Icon = stat.icon;
           const BadgeIcon = stat.badge.icon;
-          
+
           return (
             <Card 
               key={stat.id}
@@ -240,7 +240,7 @@ export const QuickStats = ({
             >
               <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               <div className={`absolute -right-6 -top-6 h-24 w-24 rounded-full ${stat.bgColor} opacity-10 group-hover:scale-150 transition-transform duration-700`} />
-              
+
               <CardHeader className="pb-2 relative z-10">
                 <div className="flex items-center justify-between mb-3">
                   <Badge variant={stat.badge.variant} className={`text-xs ${stat.badge.className || ''} backdrop-blur-sm`}>
@@ -291,7 +291,7 @@ export const QuickStats = ({
             {selectedCard && (() => {
               const stat = stats.find(s => s.id === selectedCard);
               if (!stat) return null;
-              
+
               return (
                 <div className="p-6 rounded-lg border bg-card">
                   <div className={`text-4xl font-bold ${stat.textColor} mb-2`}>

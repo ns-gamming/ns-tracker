@@ -55,7 +55,7 @@ export const AddTransactionDialog = ({ open, onOpenChange, onSuccess }: AddTrans
     if (!cat.category_type) return false;
     return cat.category_type === formData.type;
   });
-  
+
   // If no categories match the type, show all categories as fallback
   const displayCategories = filteredCategories.length > 0 ? filteredCategories : categories;
 
@@ -89,7 +89,7 @@ export const AddTransactionDialog = ({ open, onOpenChange, onSuccess }: AddTrans
 
       if (error) throw error;
       setAiSuggestions(data);
-      
+
       // Auto-fill if fields are empty and user preferences allow (opt-in)
       const userPrefsOptIn = true; // Can be fetched from user preferences
       if (userPrefsOptIn) {
@@ -183,7 +183,7 @@ export const AddTransactionDialog = ({ open, onOpenChange, onSuccess }: AddTrans
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="type" className="text-sm font-medium">Transaction Type</Label>
               <Select value={formData.type} onValueChange={(value) => setFormData({ ...formData, type: value, category_id: "" })}>
@@ -217,7 +217,7 @@ export const AddTransactionDialog = ({ open, onOpenChange, onSuccess }: AddTrans
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="amount">Amount ({getCurrencySymbol(formData.currency)})</Label>
               <Input
@@ -322,7 +322,7 @@ export const AddTransactionDialog = ({ open, onOpenChange, onSuccess }: AddTrans
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="merchant" className="flex items-center gap-2">
                 Merchant/Source (Optional)
