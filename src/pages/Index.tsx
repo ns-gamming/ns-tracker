@@ -107,12 +107,19 @@ const Index = () => {
             onClick={() => navigate("/")}
             data-testid="logo-header"
           >
-            <div className="relative h-14 w-14 rounded-full overflow-hidden bg-white shadow-lg ring-2 ring-primary/20 transition-all group-hover:scale-110 group-hover:ring-primary/40">
-              <img 
-                src={logo} 
-                alt="NS FinSight Logo" 
-                className="h-full w-full object-contain p-1"
-              />
+            <div className="relative h-14 w-14 flex-shrink-0">
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-success/20 rounded-full blur-md group-hover:blur-lg transition-all"></div>
+              <div className="relative h-full w-full rounded-full overflow-hidden bg-white shadow-lg ring-2 ring-primary/20 transition-all group-hover:scale-110 group-hover:ring-primary/40 group-hover:shadow-xl">
+                <img 
+                  src={logo} 
+                  alt="NS FinSight Logo" 
+                  className="h-full w-full object-cover scale-110"
+                  onError={(e) => {
+                    console.error('Logo failed to load');
+                    e.currentTarget.style.display = 'none';
+                  }}
+                />
+              </div>
             </div>
             <span className="text-2xl font-bold bg-gradient-to-r from-primary via-primary/80 to-primary bg-clip-text text-transparent">
               NS FinSight
@@ -473,8 +480,17 @@ const Index = () => {
           <div className="grid md:grid-cols-4 gap-8 mb-8">
             <div>
               <div className="flex items-center gap-3 mb-4">
-                <div className="h-10 w-10 rounded-full overflow-hidden bg-white shadow-md ring-2 ring-primary/20">
-                  <img src={logo} alt="NS FinSight" className="h-full w-full object-contain p-1" />
+                <div className="relative h-10 w-10 flex-shrink-0">
+                  <div className="h-full w-full rounded-full overflow-hidden bg-white shadow-md ring-2 ring-primary/20">
+                    <img 
+                      src={logo} 
+                      alt="NS FinSight" 
+                      className="h-full w-full object-cover scale-110"
+                      onError={(e) => {
+                        e.currentTarget.style.display = 'none';
+                      }}
+                    />
+                  </div>
                 </div>
                 <span className="font-bold text-lg">NS FinSight</span>
               </div>

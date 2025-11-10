@@ -14,11 +14,23 @@ const NotFound = () => {
       </div>
 
       <div className="text-center space-y-8 max-w-2xl relative z-10 animate-fade-in">
-        <div className="flex justify-center mb-8">
-          <div className="h-24 w-24 rounded-full overflow-hidden bg-white shadow-2xl animate-scale-in ring-4 ring-primary/30">
-            <img src={logoImage} alt="NS FinSight" className="h-full w-full object-contain p-2" />
+        <div className="flex flex-col items-center gap-2 mb-8">
+        <div className="relative h-20 w-20 flex-shrink-0">
+          <div className="h-full w-full rounded-full overflow-hidden bg-white shadow-xl ring-4 ring-primary/20">
+            <img 
+              src={logoImage} 
+              alt="NS FinSight" 
+              className="h-full w-full object-cover scale-110"
+              onError={(e) => {
+                e.currentTarget.style.display = 'none';
+              }}
+            />
           </div>
         </div>
+        <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
+          NS FinSight
+        </h1>
+      </div>
 
         <div className="relative">
           <h1 className="text-9xl md:text-[12rem] font-bold gradient-text mb-4 animate-scale-in">404</h1>

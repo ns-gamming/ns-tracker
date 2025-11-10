@@ -125,13 +125,17 @@ const Auth = () => {
         <div className="hidden lg:block space-y-8 animate-fade-in">
           {/* Logo & Brand */}
           <div className="flex items-center gap-4 mb-12">
-            <div className="relative">
+            <div className="relative h-20 w-20 flex-shrink-0">
               <div className="absolute inset-0 bg-primary/20 rounded-full blur-xl animate-pulse"></div>
-              <div className="h-20 w-20 rounded-full overflow-hidden bg-white shadow-2xl relative z-10 hover-scale ring-4 ring-primary/30">
+              <div className="h-full w-full rounded-full overflow-hidden bg-white shadow-2xl relative z-10 hover-scale ring-4 ring-primary/30">
                 <img 
                   src={logoImage} 
                   alt="NS FinSight" 
-                  className="h-full w-full object-contain p-2" 
+                  className="h-full w-full object-cover scale-110"
+                  onError={(e) => {
+                    console.error('Logo failed to load');
+                    e.currentTarget.style.display = 'none';
+                  }}
                 />
               </div>
             </div>

@@ -13,10 +13,21 @@ const Privacy = () => {
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-full overflow-hidden bg-white shadow-md ring-2 ring-primary/20">
-                <img src={logoImage} alt="NS FinSight" className="h-full w-full object-contain p-1" />
+              <div className="relative h-10 w-10 flex-shrink-0">
+                <div className="h-full w-full rounded-full overflow-hidden bg-white shadow-md ring-2 ring-primary/20">
+                  <img
+                    src={logoImage}
+                    alt="NS FinSight"
+                    className="h-full w-full object-cover scale-110"
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none';
+                    }}
+                  />
+                </div>
               </div>
-              <h1 className="text-xl font-bold">NS FinSight Privacy</h1>
+              <span className="text-xl font-bold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
+                NS FinSight
+              </span>
             </div>
             <Button variant="outline" onClick={() => navigate("/dashboard")} className="gap-2">
               <ArrowLeft className="w-4 h-4" />
