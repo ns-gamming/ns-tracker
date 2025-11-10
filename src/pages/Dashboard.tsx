@@ -192,7 +192,8 @@ const Dashboard = () => {
           <>
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               <div className="animate-slide-in-up" style={{ animationDelay: "0.1s" }}>
-                netWorth={dashboardData?.netWorth || 0}
+                <QuickStats
+                  netWorth={dashboardData?.netWorth || 0}
                   monthlyIncome={dashboardData?.monthlyIncome || 0}
                   monthlyExpenses={dashboardData?.monthlyExpenses || 0}
                   savingsRate={dashboardData?.savingsRate || 0}
