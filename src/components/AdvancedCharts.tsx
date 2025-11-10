@@ -331,53 +331,81 @@ export const AdvancedCharts = ({ monthlyTrend = [], categoryBreakdown = [], dail
 
         {/* Comparison Tab */}
         <TabsContent value="comparison" className="space-y-4">
-          <Card className="shadow-card animate-fade-in-up">
-            <CardHeader>
-              <CardTitle>Multi-Metric Analysis</CardTitle>
-              <CardDescription>Comprehensive financial view</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ResponsiveContainer width="100%" height={400}>
-                <LineChart data={comparisonData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                  <XAxis dataKey="month" stroke="hsl(var(--muted-foreground))" />
-                  <YAxis stroke="hsl(var(--muted-foreground))" />
-                  <Tooltip 
-                    contentStyle={{ 
-                      backgroundColor: 'hsl(var(--popover))', 
-                      border: '1px solid hsl(var(--border))',
-                      borderRadius: '8px'
-                    }} 
-                  />
-                  <Legend />
-                  <Line 
-                    type="monotone" 
-                    dataKey="income" 
-                    stroke="hsl(var(--success))" 
-                    strokeWidth={3}
-                    dot={{ fill: 'hsl(var(--success))', r: 5 }}
-                    animationDuration={800}
-                  />
-                  <Line 
-                    type="monotone" 
-                    dataKey="expenses" 
-                    stroke="hsl(var(--destructive))" 
-                    strokeWidth={3}
-                    dot={{ fill: 'hsl(var(--destructive))', r: 5 }}
-                    animationDuration={1000}
-                  />
-                  <Line 
-                    type="monotone" 
-                    dataKey="savings" 
-                    stroke="hsl(var(--primary))" 
-                    strokeWidth={3}
-                    dot={{ fill: 'hsl(var(--primary))', r: 5 }}
-                    animationDuration={1200}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
+          <div className="grid md:grid-cols-2 gap-4">
+            <Card className="shadow-card animate-fade-in-up">
+              <CardHeader>
+                <CardTitle>Multi-Metric Analysis</CardTitle>
+                <CardDescription>Comprehensive financial view</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ResponsiveContainer width="100%" height={350}>
+                  <LineChart data={comparisonData}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                    <XAxis dataKey="month" stroke="hsl(var(--muted-foreground))" />
+                    <YAxis stroke="hsl(var(--muted-foreground))" />
+                    <Tooltip 
+                      contentStyle={{ 
+                        backgroundColor: 'hsl(var(--popover))', 
+                        border: '1px solid hsl(var(--border))',
+                        borderRadius: '8px'
+                      }} 
+                    />
+                    <Legend />
+                    <Line 
+                      type="monotone" 
+                      dataKey="income" 
+                      stroke="hsl(var(--success))" 
+                      strokeWidth={3}
+                      dot={{ fill: 'hsl(var(--success))', r: 5 }}
+                      animationDuration={800}
+                    />
+                    <Line 
+                      type="monotone" 
+                      dataKey="expenses" 
+                      stroke="hsl(var(--destructive))" 
+                      strokeWidth={3}
+                      dot={{ fill: 'hsl(var(--destructive))', r: 5 }}
+                      animationDuration={1000}
+                    />
+                    <Line 
+                      type="monotone" 
+                      dataKey="savings" 
+                      stroke="hsl(var(--primary))" 
+                      strokeWidth={3}
+                      dot={{ fill: 'hsl(var(--primary))', r: 5 }}
+                      animationDuration={1200}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+
+            <Card className="shadow-card animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
+              <CardHeader>
+                <CardTitle>Transaction Volume</CardTitle>
+                <CardDescription>Daily transaction count</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ResponsiveContainer width="100%" height={350}>
+                  <BarChart data={weeklyTrend}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                    <XAxis dataKey="day" stroke="hsl(var(--muted-foreground))" />
+                    <YAxis stroke="hsl(var(--muted-foreground))" />
+                    <Tooltip 
+                      contentStyle={{ 
+                        backgroundColor: 'hsl(var(--popover))', 
+                        border: '1px solid hsl(var(--border))',
+                        borderRadius: '8px'
+                      }} 
+                    />
+                    <Legend />
+                    <Bar dataKey="income" stackId="a" fill="hsl(var(--success))" radius={[0, 0, 0, 0]} animationDuration={800} />
+                    <Bar dataKey="expense" stackId="a" fill="hsl(var(--destructive))" radius={[8, 8, 0, 0]} animationDuration={1000} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+          </div>
         </TabsContent>
       </Tabs>
     </div>

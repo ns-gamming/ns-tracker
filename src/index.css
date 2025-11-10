@@ -127,14 +127,57 @@ All colors MUST be HSL.
     font-feature-settings: "cv11", "ss01";
   }
 
-  /* Smooth transitions */
-  * {
-    @apply transition-colors duration-200;
+  /* Smooth scrolling */
+  html {
+    scroll-behavior: smooth;
   }
 
-  /* Number formatting */
-  .tabular-nums {
-    font-variant-numeric: tabular-nums;
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Mobile optimizations */
+  @media (max-width: 768px) {
+    body {
+      font-size: 14px;
+    }
+
+    h1 {
+      font-size: 1.5rem !important;
+    }
+
+    h2 {
+      font-size: 1.25rem !important;
+    }
+
+    /* Better touch targets */
+    button, a, input, select {
+      min-height: 44px;
+    }
+
+    /* Optimize dialog for mobile */
+    [role="dialog"] {
+      max-width: 95vw !important;
+      margin: 1rem !important;
+    }
+
+    /* Better card spacing on mobile */
+    .grid {
+      gap: 1rem !important;
+    }
+  }
+
+  /* Touch-friendly improvements */
+  @media (hover: none) and (pointer: coarse) {
+    button:active {
+      transform: scale(0.98);
+    }
+
+    .hover-scale:active {
+      transform: scale(1.02);
+    }
   }
 }
 

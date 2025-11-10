@@ -42,7 +42,10 @@ export const AddTransactionDialog = ({ open, onOpenChange, onSuccess }: AddTrans
     is_flagged: false,
     flag_reason: "",
     tags: "",
+    location: "",
+    receipt_url: "",
   });
+  const [receiptFile, setReceiptFile] = useState<File | null>(null);
 
   const getCurrencySymbol = (currency: string) => {
     switch (currency) {
@@ -50,6 +53,33 @@ export const AddTransactionDialog = ({ open, onOpenChange, onSuccess }: AddTrans
       case 'EUR': return '€';
       case 'USDT': return '₮';
       case 'INR': default: return '₹';
+    }
+  };
+
+  const quickAmounts = [50, 100, 500, 1000, 2000, 5000];
+
+  const handleQuickAmount = (amount: number) => {
+    setFormData({ ...formData, amount: amount.toString() });
+  };
+
+  const handleReceiptUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setReceiptFile(file);
+      toast.success("Receipt uploaded (feature coming soon)");
+    }
+  };
+
+  const getCurrentLocation = () => {
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const location = `${position.coords.latitude.toFixed(4)}, ${position.coords.longitude.toFixed(4)}`;
+          setFormData({ ...formData, location });
+          toast.success("Location added");
+        },
+        () => toast.error("Could not get location")
+      );
     }
   };
 
@@ -179,12 +209,12 @@ export const AddTransactionDialog = ({ open, onOpenChange, onSuccess }: AddTrans
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[520px] max-h-[90vh] overflow-y-auto animate-enter backdrop-blur-sm">
-        <DialogHeader className="space-y-2">
-          <DialogTitle className="text-xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-            Add Transaction
+      <DialogContent className="sm:max-w-[520px] max-h-[90vh] overflow-y-auto animate-enter backdrop-blur-sm p-4 sm:p-6">
+        <DialogHeader className="space-y-2 pb-4">
+          <DialogTitle className="text-lg sm:text-xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+            💰 Add Transaction
           </DialogTitle>
-          <DialogDescription className="text-sm">
+          <DialogDescription className="text-xs sm:text-sm">
             Record a new transaction - income, expense, or savings
           </DialogDescription>
         </DialogHeader>
@@ -223,7 +253,7 @@ export const AddTransactionDialog = ({ open, onOpenChange, onSuccess }: AddTrans
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="amount">Amount ({getCurrencySymbol(formData.currency)})</Label>
               <Input
@@ -234,11 +264,26 @@ export const AddTransactionDialog = ({ open, onOpenChange, onSuccess }: AddTrans
                 value={formData.amount}
                 onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
                 placeholder="0.00"
+                className="text-lg font-semibold"
               />
+              <div className="flex flex-wrap gap-2 mt-2">
+                {quickAmounts.map((amt) => (
+                  <Button
+                    key={amt}
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleQuickAmount(amt)}
+                    className="text-xs"
+                  >
+                    {getCurrencySymbol(formData.currency)}{amt}
+                  </Button>
+                ))}
+              </div>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="date">Date</Label>
+              <Label htmlFor="date">Date & Time</Label>
               <Input
                 id="date"
                 type="date"
@@ -388,7 +433,7 @@ export const AddTransactionDialog = ({ open, onOpenChange, onSuccess }: AddTrans
             />
           </div>
 
-          <div className="space-y-3 p-4 rounded-lg border border-border">
+          <div className="space-y-3 p-4 rounded-lg border border-border bg-muted/30">
             <div className="flex items-center gap-2">
               <input
                 type="checkbox"
@@ -420,6 +465,42 @@ export const AddTransactionDialog = ({ open, onOpenChange, onSuccess }: AddTrans
                 onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
                 placeholder="e.g., urgent, recurring, business"
               />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="location">Location (optional)</Label>
+              <div className="flex gap-2">
+                <Input
+                  id="location"
+                  value={formData.location}
+                  onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+                  placeholder="Add location manually or use GPS"
+                  className="flex-1"
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="icon"
+                  onClick={getCurrentLocation}
+                  title="Use current location"
+                >
+                  📍
+                </Button>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="receipt">Receipt Upload (optional)</Label>
+              <Input
+                id="receipt"
+                type="file"
+                accept="image/*,.pdf"
+                onChange={handleReceiptUpload}
+                className="cursor-pointer"
+              />
+              {receiptFile && (
+                <p className="text-xs text-success">✓ {receiptFile.name}</p>
+              )}
             </div>
           </div>
 

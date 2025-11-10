@@ -170,7 +170,7 @@ export const QuickStats = ({
 
   return (
     <>
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 mb-8">
+      <div className="grid gap-3 sm:gap-4 grid-cols-2 lg:grid-cols-4 mb-8">
         {stats.slice(0, 4).map((stat, index) => {
           const Icon = stat.icon;
           const BadgeIcon = stat.badge.icon;

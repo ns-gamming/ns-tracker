@@ -143,9 +143,13 @@ const Dashboard = () => {
                 <div className="h-full w-full rounded-full overflow-hidden bg-white shadow-lg ring-2 ring-primary/30 relative z-10">
                   <img 
                     src={logoImage} 
-                    alt="NS FinSight" 
+                    alt="NS FinSight Logo" 
                     className="h-full w-full object-contain p-1"
                     loading="eager"
+                    onError={(e) => {
+                      console.error('Logo failed to load');
+                      e.currentTarget.style.display = 'none';
+                    }}
                   />
                 </div>
               </div>
@@ -175,13 +179,13 @@ const Dashboard = () => {
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-8 relative z-10">
-        <div className="mb-8 flex items-center justify-between animate-slide-in-left">
+      <main className="container mx-auto px-3 sm:px-4 py-4 sm:py-8 relative z-10">
+        <div className="mb-6 sm:mb-8 flex items-center justify-between animate-slide-in-left">
           <div>
-            <h2 className="text-3xl font-bold mb-2 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">Welcome back!</h2>
-            <p className="text-muted-foreground text-lg">Here's your financial overview</p>
+            <h2 className="text-2xl sm:text-3xl font-bold mb-1 sm:mb-2 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">Welcome back!</h2>
+            <p className="text-muted-foreground text-sm sm:text-lg">Here's your financial overview</p>
           </div>
-          <Button variant="outline" size="icon" onClick={() => refetch()} disabled={isLoading}>
+          <Button variant="outline" size="icon" onClick={() => refetch()} disabled={isLoading} className="shrink-0">
             <RefreshCw className={`h-4 w-4 ${isLoading ? "animate-spin" : ""}`} />
           </Button>
         </div>
