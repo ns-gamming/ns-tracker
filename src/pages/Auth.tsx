@@ -6,8 +6,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
-import { Shield, BarChart3, Users, Lock, Sparkles, TrendingUp, Zap, CheckCircle, Eye, EyeOff } from "lucide-react";
+import { Shield, BarChart3, Users, Lock, Sparkles, TrendingUp, Zap, CheckCircle, Eye, EyeOff, User, Globe, DollarSign, Target } from "lucide-react";
 import logoImage from "../assets/ns-finsight-logo.png";
 import authBg from "@assets/stock_images/modern_abstract_grad_aebdcbb0.jpg";
 
@@ -17,6 +19,19 @@ const Auth = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  
+  const [signupData, setSignupData] = useState({
+    firstName: "",
+    lastName: "",
+    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || "Asia/Kolkata",
+    currency: "INR",
+    goals: {
+      savings: false,
+      investment: false,
+      budgeting: false,
+      debtPayoff: false,
+    },
+  });
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -48,20 +63,56 @@ const Auth = () => {
       toast.error("Password must be at least 6 characters long");
       return;
     }
-    setLoading(true);
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: { emailRedirectTo: `${window.location.origin}/dashboard` },
-    });
-    if (error) {
-      toast.error(error.message);
-    } else {
-      toast.success("Account created successfully! Please check your email to verify your account.", {
-        duration: 5000
-      });
+    if (!signupData.firstName || !signupData.lastName) {
+      toast.error("Please enter your full name");
+      return;
     }
-    setLoading(false);
+    setLoading(true);
+    
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          emailRedirectTo: `${window.location.origin}/dashboard`,
+          data: {
+            full_name: `${signupData.firstName} ${signupData.lastName}`,
+            first_name: signupData.firstName,
+            last_name: signupData.lastName,
+            timezone: signupData.timezone,
+            currency: signupData.currency,
+            financial_goals: Object.entries(signupData.goals)
+              .filter(([_, value]) => value)
+              .map(([key]) => key),
+          },
+        },
+      });
+      
+      if (error) {
+        toast.error(error.message);
+      } else {
+        if (data.user) {
+          await supabase.from("user_preferences").insert({
+            user_id: data.user.id,
+            timezone: signupData.timezone,
+            currency: signupData.currency,
+            financial_goals: Object.entries(signupData.goals)
+              .filter(([_, value]) => value)
+              .map(([key]) => key),
+          }).catch(err => {
+            console.error("Error saving user preferences:", err);
+          });
+        }
+        
+        toast.success("Account created successfully! Please check your email to verify your account.", {
+          duration: 5000
+        });
+      }
+    } catch (error: any) {
+      toast.error(error.message || "Failed to create account");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const features = [
@@ -296,7 +347,39 @@ const Auth = () => {
                 </TabsContent>
 
                 <TabsContent value="signup">
-                  <form onSubmit={handleSignUp} className="space-y-5">
+                  <form onSubmit={handleSignUp} className="space-y-4">
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="space-y-2">
+                        <Label htmlFor="firstName" className="text-sm font-medium flex items-center gap-1">
+                          <User className="w-3 h-3" />
+                          First Name
+                        </Label>
+                        <Input 
+                          id="firstName" 
+                          type="text" 
+                          placeholder="John"
+                          value={signupData.firstName} 
+                          onChange={(e) => setSignupData({ ...signupData, firstName: e.target.value })} 
+                          required 
+                          className="h-11 bg-background/50 border-border/50 focus:border-primary transition-all video-smooth"
+                          data-testid="input-firstname-signup"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="lastName" className="text-sm font-medium">Last Name</Label>
+                        <Input 
+                          id="lastName" 
+                          type="text" 
+                          placeholder="Doe"
+                          value={signupData.lastName} 
+                          onChange={(e) => setSignupData({ ...signupData, lastName: e.target.value })} 
+                          required 
+                          className="h-11 bg-background/50 border-border/50 focus:border-primary transition-all video-smooth"
+                          data-testid="input-lastname-signup"
+                        />
+                      </div>
+                    </div>
+                    
                     <div className="space-y-2">
                       <Label htmlFor="email-signup" className="text-sm font-medium">Email Address</Label>
                       <Input 
@@ -306,10 +389,11 @@ const Auth = () => {
                         value={email} 
                         onChange={(e) => setEmail(e.target.value)} 
                         required 
-                        className="h-12 bg-background/50 border-border/50 focus:border-primary transition-colors"
+                        className="h-11 bg-background/50 border-border/50 focus:border-primary transition-all video-smooth"
                         data-testid="input-email-signup"
                       />
                     </div>
+                    
                     <div className="space-y-2">
                       <Label htmlFor="password-signup" className="text-sm font-medium">Password</Label>
                       <div className="relative">
@@ -321,7 +405,7 @@ const Auth = () => {
                           onChange={(e) => setPassword(e.target.value)} 
                           required 
                           minLength={6} 
-                          className="h-12 bg-background/50 border-border/50 focus:border-primary transition-colors pr-12"
+                          className="h-11 bg-background/50 border-border/50 focus:border-primary transition-all video-smooth pr-12"
                           data-testid="input-password-signup"
                         />
                         <button
@@ -337,9 +421,94 @@ const Auth = () => {
                         Minimum 6 characters
                       </p>
                     </div>
+
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="space-y-2">
+                        <Label htmlFor="timezone" className="text-sm font-medium flex items-center gap-1">
+                          <Globe className="w-3 h-3" />
+                          Timezone
+                        </Label>
+                        <Select value={signupData.timezone} onValueChange={(value) => setSignupData({ ...signupData, timezone: value })}>
+                          <SelectTrigger id="timezone" className="h-11 bg-background/50 border-border/50 video-smooth">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent className="max-h-[200px]">
+                            <SelectItem value="Asia/Kolkata">India (IST)</SelectItem>
+                            <SelectItem value="America/New_York">US Eastern</SelectItem>
+                            <SelectItem value="America/Los_Angeles">US Pacific</SelectItem>
+                            <SelectItem value="Europe/London">UK (GMT)</SelectItem>
+                            <SelectItem value="Europe/Paris">Central Europe</SelectItem>
+                            <SelectItem value="Asia/Tokyo">Japan</SelectItem>
+                            <SelectItem value="Australia/Sydney">Australia</SelectItem>
+                            <SelectItem value="Asia/Dubai">UAE</SelectItem>
+                            <SelectItem value="Asia/Singapore">Singapore</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="currency" className="text-sm font-medium flex items-center gap-1">
+                          <DollarSign className="w-3 h-3" />
+                          Currency
+                        </Label>
+                        <Select value={signupData.currency} onValueChange={(value) => setSignupData({ ...signupData, currency: value })}>
+                          <SelectTrigger id="currency" className="h-11 bg-background/50 border-border/50 video-smooth">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="INR">INR (₹)</SelectItem>
+                            <SelectItem value="USD">USD ($)</SelectItem>
+                            <SelectItem value="EUR">EUR (€)</SelectItem>
+                            <SelectItem value="GBP">GBP (£)</SelectItem>
+                            <SelectItem value="JPY">JPY (¥)</SelectItem>
+                            <SelectItem value="AUD">AUD (A$)</SelectItem>
+                            <SelectItem value="CAD">CAD (C$)</SelectItem>
+                            <SelectItem value="AED">AED (د.إ)</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+
+                    <div className="space-y-2 p-3 rounded-lg bg-primary/5 border border-primary/10">
+                      <Label className="text-sm font-medium flex items-center gap-1 mb-2">
+                        <Target className="w-4 h-4" />
+                        Financial Goals (Optional)
+                      </Label>
+                      <div className="grid grid-cols-2 gap-2">
+                        <label className="flex items-center gap-2 cursor-pointer hover:bg-primary/5 p-2 rounded transition-colors">
+                          <Checkbox 
+                            checked={signupData.goals.savings}
+                            onCheckedChange={(checked) => setSignupData({ ...signupData, goals: { ...signupData.goals, savings: !!checked } })}
+                          />
+                          <span className="text-sm">Savings</span>
+                        </label>
+                        <label className="flex items-center gap-2 cursor-pointer hover:bg-primary/5 p-2 rounded transition-colors">
+                          <Checkbox 
+                            checked={signupData.goals.investment}
+                            onCheckedChange={(checked) => setSignupData({ ...signupData, goals: { ...signupData.goals, investment: !!checked } })}
+                          />
+                          <span className="text-sm">Investment</span>
+                        </label>
+                        <label className="flex items-center gap-2 cursor-pointer hover:bg-primary/5 p-2 rounded transition-colors">
+                          <Checkbox 
+                            checked={signupData.goals.budgeting}
+                            onCheckedChange={(checked) => setSignupData({ ...signupData, goals: { ...signupData.goals, budgeting: !!checked } })}
+                          />
+                          <span className="text-sm">Budgeting</span>
+                        </label>
+                        <label className="flex items-center gap-2 cursor-pointer hover:bg-primary/5 p-2 rounded transition-colors">
+                          <Checkbox 
+                            checked={signupData.goals.debtPayoff}
+                            onCheckedChange={(checked) => setSignupData({ ...signupData, goals: { ...signupData.goals, debtPayoff: !!checked } })}
+                          />
+                          <span className="text-sm">Debt Payoff</span>
+                        </label>
+                      </div>
+                    </div>
+
                     <Button 
                       type="submit" 
-                      className="w-full h-12 text-base font-semibold bg-gradient-to-r from-success to-success/80 hover:shadow-xl transition-all" 
+                      className="w-full h-12 text-base font-semibold bg-gradient-to-r from-success to-success/80 hover:shadow-xl transition-all video-smooth" 
                       disabled={loading}
                       data-testid="button-signup"
                     >

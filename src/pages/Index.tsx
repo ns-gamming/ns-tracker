@@ -1,21 +1,42 @@
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { TrendingUp, Shield, Sparkles, BarChart3, Zap, Target, Users, ArrowRight, CheckCircle, Star, Globe, Lock, TrendingDown } from "lucide-react";
 import { useAnalytics } from "@/hooks/useAnalytics";
 import logo from "../assets/ns-finsight-logo.png";
 import heroImage from "@assets/stock_images/professional_busines_b7850363.jpg";
-import analyticsImage from "@assets/stock_images/financial_growth_cha_7eb32286.jpg";
-import mobileImage from "@assets/stock_images/mobile_banking_app_s_8c14e23c.jpg";
-import familyImage from "@assets/stock_images/happy_family_budget__9bf25b53.jpg";
+import analyticsImage from "@assets/generated_images/Financial_Dashboard_Analytics_View_e6084a95.png";
+import mobileImage from "@assets/generated_images/Mobile_Expense_Tracking_UI_01b29df1.png";
+import professionalPlanningImage from "@assets/generated_images/Professional_Financial_Planning_172b0daa.png";
+import growthVisualizationImage from "@assets/generated_images/Financial_Growth_Visualization_536e03fa.png";
 
 const Index = () => {
   const navigate = useNavigate();
   const { trackPageView, trackClick } = useAnalytics();
+  const observerRef = useRef<IntersectionObserver | null>(null);
 
   useEffect(() => {
     trackPageView('/');
+
+    observerRef.current = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('revealed');
+          }
+        });
+      },
+      { threshold: 0.1, rootMargin: '0px 0px -100px 0px' }
+    );
+
+    document.querySelectorAll('.scroll-reveal, .scroll-reveal-left, .scroll-reveal-right, .scroll-reveal-scale').forEach((el) => {
+      observerRef.current?.observe(el);
+    });
+
+    return () => {
+      observerRef.current?.disconnect();
+    };
   }, [trackPageView]);
 
   const features = [
@@ -253,8 +274,7 @@ const Index = () => {
             {features.map((feature, index) => (
               <Card 
                 key={index}
-                className={`p-8 bg-gradient-to-br ${feature.color} border border-border/50 hover:shadow-2xl hover:scale-105 hover:-translate-y-2 transition-all duration-500 cursor-pointer animate-fade-in-up group`}
-                style={{ animationDelay: feature.delay }}
+                className={`scroll-reveal-scale p-8 bg-gradient-to-br ${feature.color} border border-border/50 hover:shadow-2xl card-float cursor-pointer group`}
                 data-testid={`card-feature-${index}`}
               >
                 <div className={`flex items-center justify-center w-16 h-16 rounded-2xl bg-card mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 shadow-lg`}>
@@ -273,7 +293,7 @@ const Index = () => {
         <div className="container mx-auto px-4">
           {/* Analytics Showcase */}
           <div className="grid lg:grid-cols-2 gap-12 items-center mb-24 max-w-7xl mx-auto">
-            <div className="order-2 lg:order-1 animate-fade-in-up">
+            <div className="order-2 lg:order-1 scroll-reveal-left">
               <div className="inline-block px-4 py-2 rounded-full bg-success/10 text-success text-sm font-medium mb-4">
                 <BarChart3 className="w-4 h-4 inline mr-2" />
                 Analytics Dashboard
@@ -287,32 +307,36 @@ const Index = () => {
               </p>
               <ul className="space-y-4">
                 {["Real-time chart updates", "Customizable time ranges", "Category breakdowns", "Income vs Expense tracking"].map((item, i) => (
-                  <li key={i} className="flex items-center gap-3">
+                  <li key={i} className="flex items-center gap-3 scroll-reveal" style={{ transitionDelay: `${i * 0.1}s` }}>
                     <CheckCircle className="w-5 h-5 text-success flex-shrink-0" />
                     <span className="text-foreground">{item}</span>
                   </li>
                 ))}
               </ul>
             </div>
-            <div className="order-1 lg:order-2 animate-fade-in-up" style={{ animationDelay: "0.2s" }}>
-              <img 
-                src={analyticsImage} 
-                alt="Financial Analytics Dashboard" 
-                className="rounded-2xl shadow-2xl border border-border hover-scale"
-              />
+            <div className="order-1 lg:order-2 scroll-reveal-right">
+              <div className="overflow-hidden rounded-2xl shadow-2xl border border-border">
+                <img 
+                  src={analyticsImage} 
+                  alt="Financial Analytics Dashboard" 
+                  className="w-full h-full object-cover parallax-image"
+                />
+              </div>
             </div>
           </div>
 
           {/* Mobile App Showcase */}
           <div className="grid lg:grid-cols-2 gap-12 items-center mb-24 max-w-7xl mx-auto">
-            <div className="animate-fade-in-up">
-              <img 
-                src={mobileImage} 
-                alt="Mobile Banking App" 
-                className="rounded-2xl shadow-2xl border border-border hover-scale"
-              />
+            <div className="scroll-reveal-left">
+              <div className="overflow-hidden rounded-2xl shadow-2xl border border-border">
+                <img 
+                  src={mobileImage} 
+                  alt="Mobile Expense Tracking Interface" 
+                  className="w-full h-full object-cover parallax-image"
+                />
+              </div>
             </div>
-            <div className="animate-fade-in-up" style={{ animationDelay: "0.2s" }}>
+            <div className="scroll-reveal-right">
               <div className="inline-block px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-4">
                 <Globe className="w-4 h-4 inline mr-2" />
                 Mobile & Web Access
@@ -326,7 +350,7 @@ const Index = () => {
               </p>
               <ul className="space-y-4">
                 {["Cross-device synchronization", "Offline mode support", "Push notifications", "Secure cloud backup"].map((item, i) => (
-                  <li key={i} className="flex items-center gap-3">
+                  <li key={i} className="flex items-center gap-3 scroll-reveal" style={{ transitionDelay: `${i * 0.1}s` }}>
                     <CheckCircle className="w-5 h-5 text-primary flex-shrink-0" />
                     <span className="text-foreground">{item}</span>
                   </li>
@@ -337,33 +361,35 @@ const Index = () => {
 
           {/* Family Finance Showcase */}
           <div className="grid lg:grid-cols-2 gap-12 items-center max-w-7xl mx-auto">
-            <div className="order-2 lg:order-1 animate-fade-in-up">
+            <div className="order-2 lg:order-1 scroll-reveal-left">
               <div className="inline-block px-4 py-2 rounded-full bg-warning/10 text-warning text-sm font-medium mb-4">
                 <Users className="w-4 h-4 inline mr-2" />
-                Family Management
+                Professional Financial Planning
               </div>
               <h3 className="text-3xl md:text-4xl font-bold mb-6">
-                Manage Family Finances
-                <span className="block gradient-text mt-2">Together, Better</span>
+                Plan Your Financial Future
+                <span className="block gradient-text mt-2">With Confidence</span>
               </h3>
               <p className="text-lg text-muted-foreground mb-6 leading-relaxed">
-                Create a shared financial space for your family. Track individual and collective expenses with detailed member dashboards and insights.
+                Professional-grade planning tools help you set goals, track progress, and make informed decisions about your financial future.
               </p>
               <ul className="space-y-4">
-                {["Individual member profiles", "Shared expense tracking", "Family budget management", "Detailed analytics per member"].map((item, i) => (
-                  <li key={i} className="flex items-center gap-3">
+                {["Goal setting & tracking", "Investment monitoring", "Budget forecasting", "Detailed financial reports"].map((item, i) => (
+                  <li key={i} className="flex items-center gap-3 scroll-reveal" style={{ transitionDelay: `${i * 0.1}s` }}>
                     <CheckCircle className="w-5 h-5 text-warning flex-shrink-0" />
                     <span className="text-foreground">{item}</span>
                   </li>
                 ))}
               </ul>
             </div>
-            <div className="order-1 lg:order-2 animate-fade-in-up" style={{ animationDelay: "0.2s" }}>
-              <img 
-                src={familyImage} 
-                alt="Family Budget Planning" 
-                className="rounded-2xl shadow-2xl border border-border hover-scale"
-              />
+            <div className="order-1 lg:order-2 scroll-reveal-right">
+              <div className="overflow-hidden rounded-2xl shadow-2xl border border-border">
+                <img 
+                  src={professionalPlanningImage} 
+                  alt="Professional Financial Planning" 
+                  className="w-full h-full object-cover parallax-image"
+                />
+              </div>
             </div>
           </div>
         </div>

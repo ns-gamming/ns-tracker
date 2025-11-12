@@ -5,9 +5,16 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
+import { 
+  Loader2, Plus, ChevronDown,
+  Package, Utensils, Home, Car, Briefcase, Gamepad2, Hospital, Plane,
+  ShoppingCart, Coins, Book, Music, Film, Activity, Pill, GraduationCap,
+  TrendingUp, TrendingDown, Landmark, MapPin, Upload, Flag, Lightbulb,
+  Building2, Wallet, Bitcoin, CreditCard, Banknote
+} from "lucide-react";
 
 interface AddTransactionDialogProps {
   open: boolean;
@@ -18,11 +25,28 @@ interface AddTransactionDialogProps {
 interface Category { id: string; name: string; color?: string; icon?: string; category_type?: string }
 interface Member { id: string; name: string; is_alive: boolean }
 
+const iconMap: Record<string, any> = {
+  Package, Utensils, Home, Car, Briefcase, Gamepad2, Hospital, Plane,
+  ShoppingCart, Coins, Book, Music, Film, Activity, Pill, GraduationCap,
+  TrendingUp, TrendingDown, Landmark
+};
+
+const getIconComponent = (iconName?: string) => {
+  if (!iconName) return Package;
+  return iconMap[iconName] || Package;
+};
+
 export const AddTransactionDialog = ({ open, onOpenChange, onSuccess }: AddTransactionDialogProps) => {
   const [loading, setLoading] = useState(false);
   const [loadingSuggestions, setLoadingSuggestions] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
   const [members, setMembers] = useState<Member[]>([]);
+  const [showCreateCategory, setShowCreateCategory] = useState(false);
+  const [newCategoryData, setNewCategoryData] = useState({
+    name: "",
+    icon: "Package",
+    color: "#3b82f6",
+  });
   const [aiSuggestions, setAiSuggestions] = useState<{
     merchant: string;
     notes: string;
@@ -144,6 +168,65 @@ export const AddTransactionDialog = ({ open, onOpenChange, onSuccess }: AddTrans
     }
   };
 
+  const createNewCategory = async () => {
+    if (!newCategoryData.name) {
+      toast.error("Please enter a category name");
+      return;
+    }
+
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const slug = newCategoryData.name.toLowerCase().replace(/\s+/g, "_");
+      const categoryData = {
+        name: newCategoryData.name,
+        slug,
+        icon: newCategoryData.icon,
+        color: newCategoryData.color,
+        category_type: formData.type,
+        user_id: user.id,
+        is_default: false,
+      };
+
+      const { data, error } = await supabase.from("categories").insert(categoryData).select().single();
+
+      if (error) throw error;
+
+      toast.success("Category created successfully!");
+      const userId = (await supabase.auth.getUser()).data.user?.id;
+      if (userId) {
+        const { data: cats } = await supabase.from("categories").select("id, name, color, icon, category_type").or(`user_id.eq.${userId},user_id.is.null`);
+        setCategories(cats || []);
+      }
+
+      setFormData({ ...formData, category_id: data.id });
+      setNewCategoryData({ name: "", icon: "Package", color: "#3b82f6" });
+      setShowCreateCategory(false);
+    } catch (error: any) {
+      toast.error(error.message || "Failed to create category");
+    }
+  };
+
+  const iconOptions = [
+    { name: "Package", icon: Package },
+    { name: "Utensils", icon: Utensils },
+    { name: "Home", icon: Home },
+    { name: "Car", icon: Car },
+    { name: "Briefcase", icon: Briefcase },
+    { name: "Gamepad2", icon: Gamepad2 },
+    { name: "Hospital", icon: Hospital },
+    { name: "Plane", icon: Plane },
+    { name: "ShoppingCart", icon: ShoppingCart },
+    { name: "Coins", icon: Coins },
+    { name: "Book", icon: Book },
+    { name: "Music", icon: Music },
+    { name: "Film", icon: Film },
+    { name: "Activity", icon: Activity },
+    { name: "Pill", icon: Pill },
+    { name: "GraduationCap", icon: GraduationCap }
+  ];
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (loading) return;
@@ -211,8 +294,9 @@ export const AddTransactionDialog = ({ open, onOpenChange, onSuccess }: AddTrans
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[520px] max-h-[90vh] overflow-y-auto animate-enter backdrop-blur-sm p-4 sm:p-6">
         <DialogHeader className="space-y-2 pb-4">
-          <DialogTitle className="text-lg sm:text-xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-            💰 Add Transaction
+          <DialogTitle className="text-lg sm:text-xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent flex items-center gap-2">
+            <Coins className="w-5 h-5" />
+            Add Transaction
           </DialogTitle>
           <DialogDescription className="text-xs sm:text-sm">
             Record a new transaction - income, expense, or savings
@@ -227,9 +311,24 @@ export const AddTransactionDialog = ({ open, onOpenChange, onSuccess }: AddTrans
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="income">💰 Income</SelectItem>
-                  <SelectItem value="expense">💸 Expense</SelectItem>
-                  <SelectItem value="savings">🏦 Savings</SelectItem>
+                  <SelectItem value="income">
+                    <span className="flex items-center gap-2">
+                      <TrendingUp className="w-4 h-4" />
+                      Income
+                    </span>
+                  </SelectItem>
+                  <SelectItem value="expense">
+                    <span className="flex items-center gap-2">
+                      <TrendingDown className="w-4 h-4" />
+                      Expense
+                    </span>
+                  </SelectItem>
+                  <SelectItem value="savings">
+                    <span className="flex items-center gap-2">
+                      <Landmark className="w-4 h-4" />
+                      Savings
+                    </span>
+                  </SelectItem>
                 </SelectContent>
               </Select>
               <p className="text-xs text-muted-foreground">
@@ -321,7 +420,10 @@ export const AddTransactionDialog = ({ open, onOpenChange, onSuccess }: AddTrans
                           className="cursor-pointer hover:bg-accent focus:bg-accent rounded-md my-0.5 h-10 flex items-center transition-all"
                         >
                           <span className="flex items-center gap-2">
-                            {c.icon && <span className="text-lg">{c.icon}</span>}
+                            {c.icon && (() => {
+                              const IconComponent = getIconComponent(c.icon);
+                              return <IconComponent className="w-4 h-4" />;
+                            })()}
                             <span className="text-base">{c.name}</span>
                           </span>
                         </SelectItem>
@@ -331,10 +433,107 @@ export const AddTransactionDialog = ({ open, onOpenChange, onSuccess }: AddTrans
                 </SelectContent>
               </Select>
               {formData.category_id === "" && (
-                <p className="text-xs text-muted-foreground animate-fade-in">
-                  💡 Tip: Choose a category that best matches this {formData.type}
+                <p className="text-xs text-muted-foreground animate-fade-in flex items-center gap-1">
+                  <Lightbulb className="w-3 h-3" />
+                  Tip: Choose a category that best matches this {formData.type}
                 </p>
               )}
+
+              <Collapsible open={showCreateCategory} onOpenChange={setShowCreateCategory}>
+                <CollapsibleTrigger asChild>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    className="w-full mt-2 video-smooth"
+                  >
+                    <Plus className="w-4 h-4 mr-2" />
+                    {showCreateCategory ? "Cancel" : "Create New Category"}
+                    <ChevronDown className={`w-4 h-4 ml-auto transition-transform ${showCreateCategory ? 'rotate-180' : ''}`} />
+                  </Button>
+                </CollapsibleTrigger>
+                <CollapsibleContent className="mt-3 animate-fade-in">
+                  <div className="p-4 rounded-lg border border-primary/20 bg-primary/5 space-y-3">
+                    <div>
+                      <Label htmlFor="new-category-name">Category Name</Label>
+                      <Input
+                        id="new-category-name"
+                        value={newCategoryData.name}
+                        onChange={(e) => setNewCategoryData({ ...newCategoryData, name: e.target.value })}
+                        placeholder="e.g., Groceries, Entertainment"
+                        className="mt-1"
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <Label htmlFor="new-category-icon">Icon</Label>
+                        <Select 
+                          value={newCategoryData.icon} 
+                          onValueChange={(value) => setNewCategoryData({ ...newCategoryData, icon: value })}
+                        >
+                          <SelectTrigger id="new-category-icon" className="mt-1">
+                            <SelectValue>
+                              {(() => {
+                                const IconComponent = getIconComponent(newCategoryData.icon);
+                                return (
+                                  <span className="flex items-center gap-2">
+                                    <IconComponent className="w-4 h-4" />
+                                    {newCategoryData.icon}
+                                  </span>
+                                );
+                              })()}
+                            </SelectValue>
+                          </SelectTrigger>
+                          <SelectContent>
+                            {iconOptions.map((option) => (
+                              <SelectItem key={option.name} value={option.name}>
+                                <span className="flex items-center gap-2">
+                                  <option.icon className="w-4 h-4" />
+                                  {option.name}
+                                </span>
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div>
+                        <Label htmlFor="new-category-color">Color</Label>
+                        <div className="flex gap-2 mt-1">
+                          <Input
+                            type="color"
+                            id="new-category-color"
+                            value={newCategoryData.color}
+                            onChange={(e) => setNewCategoryData({ ...newCategoryData, color: e.target.value })}
+                            className="w-16 h-9 p-1 cursor-pointer"
+                          />
+                          <Input
+                            value={newCategoryData.color}
+                            onChange={(e) => setNewCategoryData({ ...newCategoryData, color: e.target.value })}
+                            placeholder="#3b82f6"
+                            className="flex-1 h-9"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    <Button
+                      type="button"
+                      onClick={createNewCategory}
+                      size="sm"
+                      className="w-full"
+                    >
+                      <Plus className="w-4 h-4 mr-2" />
+                      Create Category
+                    </Button>
+
+                    <p className="text-xs text-muted-foreground">
+                      This category will be created as "{formData.type}" type
+                    </p>
+                  </div>
+                </CollapsibleContent>
+              </Collapsible>
             </div>
 
             <div className="space-y-2">
@@ -387,7 +586,10 @@ export const AddTransactionDialog = ({ open, onOpenChange, onSuccess }: AddTrans
                 className="transition-all"
               />
               {aiSuggestions && formData.merchant === aiSuggestions.merchant && (
-                <p className="text-xs text-primary animate-fade-in">✨ AI suggested based on your history</p>
+                <p className="text-xs text-primary animate-fade-in flex items-center gap-1">
+                  <Activity className="w-3 h-3" />
+                  AI suggested based on your history
+                </p>
               )}
             </div>
 
@@ -399,13 +601,48 @@ export const AddTransactionDialog = ({ open, onOpenChange, onSuccess }: AddTrans
                 </SelectTrigger>
                 <SelectContent className="bg-popover border-border z-[100]">
                   <SelectItem value="none">None</SelectItem>
-                  <SelectItem value="bank">🏦 Bank Account</SelectItem>
-                  <SelectItem value="wallet">💳 Wallet</SelectItem>
-                  <SelectItem value="binance">🔶 Binance</SelectItem>
-                  <SelectItem value="paypal">💙 PayPal</SelectItem>
-                  <SelectItem value="crypto_wallet">₿ Crypto Wallet</SelectItem>
-                  <SelectItem value="cash">💵 Cash</SelectItem>
-                  <SelectItem value="other">📦 Other</SelectItem>
+                  <SelectItem value="bank">
+                    <span className="flex items-center gap-2">
+                      <Building2 className="w-4 h-4" />
+                      Bank Account
+                    </span>
+                  </SelectItem>
+                  <SelectItem value="wallet">
+                    <span className="flex items-center gap-2">
+                      <Wallet className="w-4 h-4" />
+                      Wallet
+                    </span>
+                  </SelectItem>
+                  <SelectItem value="binance">
+                    <span className="flex items-center gap-2">
+                      <Bitcoin className="w-4 h-4" />
+                      Binance
+                    </span>
+                  </SelectItem>
+                  <SelectItem value="paypal">
+                    <span className="flex items-center gap-2">
+                      <CreditCard className="w-4 h-4" />
+                      PayPal
+                    </span>
+                  </SelectItem>
+                  <SelectItem value="crypto_wallet">
+                    <span className="flex items-center gap-2">
+                      <Bitcoin className="w-4 h-4" />
+                      Crypto Wallet
+                    </span>
+                  </SelectItem>
+                  <SelectItem value="cash">
+                    <span className="flex items-center gap-2">
+                      <Banknote className="w-4 h-4" />
+                      Cash
+                    </span>
+                  </SelectItem>
+                  <SelectItem value="other">
+                    <span className="flex items-center gap-2">
+                      <Package className="w-4 h-4" />
+                      Other
+                    </span>
+                  </SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -442,7 +679,10 @@ export const AddTransactionDialog = ({ open, onOpenChange, onSuccess }: AddTrans
                 onChange={(e) => setFormData({ ...formData, is_flagged: e.target.checked })}
                 className="w-4 h-4"
               />
-              <Label htmlFor="is_flagged" className="cursor-pointer">🚩 Flag this transaction for review</Label>
+              <Label htmlFor="is_flagged" className="cursor-pointer flex items-center gap-2">
+                <Flag className="w-4 h-4" />
+                Flag this transaction for review
+              </Label>
             </div>
             
             {formData.is_flagged && (
@@ -484,7 +724,7 @@ export const AddTransactionDialog = ({ open, onOpenChange, onSuccess }: AddTrans
                   onClick={getCurrentLocation}
                   title="Use current location"
                 >
-                  📍
+                  <MapPin className="w-4 h-4" />
                 </Button>
               </div>
             </div>
