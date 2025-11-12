@@ -23,7 +23,7 @@ export const AdSense = ({
     const loadAd = async () => {
       try {
         if (adRef.current && window) {
-          await new Promise(resolve => setTimeout(resolve, 100));
+          await new Promise(resolve => setTimeout(resolve, 200));
           // @ts-ignore
           (window.adsbygoogle = window.adsbygoogle || []).push({});
           setAdLoaded(true);
@@ -35,7 +35,7 @@ export const AdSense = ({
     };
 
     loadAd();
-  }, []);
+  }, [slot]);
 
   return (
     <div 

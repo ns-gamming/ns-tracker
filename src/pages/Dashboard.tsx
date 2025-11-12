@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
 import { User } from "@supabase/supabase-js";
-import { TrendingUp, LogOut, Plus, Moon, Sun, RefreshCw, MessageSquare, Users, Link as LinkIcon, Shield, Keyboard, Tag, Settings, Maximize2, Minimize2 } from "lucide-react";
+import { TrendingUp, LogOut, Plus, Moon, Sun, RefreshCw, MessageSquare, Users, Link as LinkIcon, Shield, Keyboard, Tag, Settings, Maximize2, Minimize2, TrendingDown, Target } from "lucide-react";
 import logoImage from "../assets/ns-finsight-logo.png";
 import { AddTransactionDialog } from "@/components/AddTransactionDialog";
 import { FloatingActionButton } from "@/components/FloatingActionButton";
@@ -67,7 +67,17 @@ const Dashboard = () => {
     const newTheme = theme === "light" ? "dark" : "light";
     setTheme(newTheme);
     localStorage.setItem("theme", newTheme);
+
+    // Add animation for theme transition
+    document.documentElement.classList.add("theme-transition");
     document.documentElement.classList.toggle("dark", newTheme === "dark");
+
+    const animationEndHandler = () => {
+      document.documentElement.classList.remove("theme-transition");
+      document.documentElement.removeEventListener("transitionend", animationEndHandler);
+    };
+    document.documentElement.addEventListener("transitionend", animationEndHandler);
+
     toast.success(`${newTheme === "dark" ? "Dark" : "Light"} mode enabled`);
   };
 
@@ -164,6 +174,9 @@ const Dashboard = () => {
   }
 
   if (!user) return null;
+
+  // Extract data for new components
+  const { monthlyIncome = 0, monthlyExpenses = 0, totalIncome = 0, totalExpenses = 0 } = dashboardData || {};
 
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
@@ -389,59 +402,71 @@ const Dashboard = () => {
               <RealityCheck />
             </div>
 
-            <div className="mb-8">
-              <AdSense slot="0987654321" format="auto" />
+            <div className="mb-8 animate-fade-in-up" style={{ animationDelay: "1.0s" }}>
+              <AdSense slot="2345678901" format="horizontal" />
+            </div>
+
+            <div className="grid gap-6 lg:grid-cols-2 mb-8">
+              <Card className="shadow-card glass-morphism border-border/50 animate-card-entrance" style={{ animationDelay: "1.1s" }}>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <TrendingUp className="w-5 h-5 text-success" />
+                    Income Trends
+                  </CardTitle>
+                  <CardDescription>Track your income sources and growth</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between p-4 rounded-lg bg-success/10">
+                      <div>
+                        <p className="text-sm text-muted-foreground">This Month</p>
+                        <p className="text-2xl font-bold text-success">₹{monthlyIncome.toLocaleString()}</p>
+                      </div>
+                      <TrendingUp className="w-8 h-8 text-success" />
+                    </div>
+                    <div className="flex items-center justify-between p-4 rounded-lg bg-primary/10">
+                      <div>
+                        <p className="text-sm text-muted-foreground">Average Monthly</p>
+                        <p className="text-2xl font-bold text-primary">₹{(totalIncome / 12).toLocaleString('en-IN', { maximumFractionDigits: 0 })}</p>
+                      </div>
+                      <Target className="w-8 h-8 text-primary" />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="shadow-card glass-morphism border-border/50 animate-card-entrance" style={{ animationDelay: "1.2s" }}>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <TrendingDown className="w-5 h-5 text-destructive" />
+                    Expense Analysis
+                  </CardTitle>
+                  <CardDescription>Monitor your spending patterns</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between p-4 rounded-lg bg-destructive/10">
+                      <div>
+                        <p className="text-sm text-muted-foreground">This Month</p>
+                        <p className="text-2xl font-bold text-destructive">₹{monthlyExpenses.toLocaleString()}</p>
+                      </div>
+                      <TrendingDown className="w-8 h-8 text-destructive" />
+                    </div>
+                    <div className="flex items-center justify-between p-4 rounded-lg bg-warning/10">
+                      <div>
+                        <p className="text-sm text-muted-foreground">Average Monthly</p>
+                        <p className="text-2xl font-bold text-warning">₹{(totalExpenses / 12).toLocaleString('en-IN', { maximumFractionDigits: 0 })}</p>
+                      </div>
+                      <Target className="w-8 h-8 text-warning" />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
 
             <div className="mb-8">
               <PreciousMetals />
             </div>
-
-            <div className="mb-8">
-              <AdSense slot="2345678901" format="horizontal" />
-            </div>
-
-            <div className="mb-8">
-              <OrderTracking />
-            </div>
-
-            <Card className="shadow-card opacity-0 animate-card-entrance glass-morphism border-border/50" style={{ animationDelay: "1.2s", animationFillMode: "forwards" }}>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <span className="animate-gradient-shift bg-gradient-to-r from-primary to-success bg-clip-text text-transparent bg-[length:200%_auto]">Quick Actions</span>
-                </CardTitle>
-                <CardDescription>Manage your finances efficiently</CardDescription>
-              </CardHeader>
-              <CardContent className="flex flex-wrap gap-4">
-                <Button className="gap-2 hover-glow hover:scale-110 transition-all duration-300" onClick={() => setShowAddTransaction(true)}>
-                  <Plus className="h-4 w-4" />
-                  Add Transaction
-                </Button>
-                <Button className="gap-2 hover-glow hover:scale-110 transition-all duration-300" onClick={() => setShowAssetDialog(true)}>
-                  <TrendingUp className="h-4 w-4" />
-                  Add Asset
-                </Button>
-                <Button variant="outline" className="gap-2 hover-glow hover:scale-110 transition-all duration-300" onClick={() => toast.info("Bank connection coming soon!")}>
-                  <LinkIcon className="h-4 w-4" />
-                  Connect Bank Account
-                </Button>
-                <Button variant="outline" className="gap-2 hover-glow hover:scale-110 transition-all duration-300" onClick={() => setShowBudgetDialog(true)}>
-                  Set Budget
-                </Button>
-                <Button variant="outline" className="gap-2 hover-glow hover:scale-110 transition-all duration-300" onClick={() => navigate("/family")}>
-                  <Users className="h-4 w-4" />
-                  Manage Family
-                </Button>
-                <Button variant="outline" className="gap-2 hover-glow hover:scale-110 transition-all duration-300" onClick={() => navigate("/categories")}>
-                  <Tag className="h-4 w-4" />
-                  Manage Categories
-                </Button>
-                <Button variant="outline" className="gap-2 hover-glow hover:scale-110 transition-all duration-300" onClick={() => setShowShortcuts(true)}>
-                  <Keyboard className="h-4 w-4" />
-                  Keyboard Shortcuts
-                </Button>
-              </CardContent>
-            </Card>
           </>
         )}
 
