@@ -1210,6 +1210,7 @@ export type Database = {
           email: string
           gender: string | null
           id: string
+          name: string | null
           preferences: Json | null
           profile_picture_url: string | null
           timezone: string | null
@@ -1224,6 +1225,7 @@ export type Database = {
           email: string
           gender?: string | null
           id: string
+          name?: string | null
           preferences?: Json | null
           profile_picture_url?: string | null
           timezone?: string | null
@@ -1238,6 +1240,7 @@ export type Database = {
           email?: string
           gender?: string | null
           id?: string
+          name?: string | null
           preferences?: Json | null
           profile_picture_url?: string | null
           timezone?: string | null

@@ -94,6 +94,17 @@ const Auth = () => {
         toast.error(error.message);
       } else {
         if (data.user) {
+          // Save user's name to users table
+          await supabase.from("users").upsert({
+            id: data.user.id,
+            name: `${signupData.firstName} ${signupData.lastName}`,
+            display_name: signupData.firstName,
+            currency: signupData.currency,
+          }).catch(err => {
+            console.error("Error saving user name:", err);
+          });
+
+          // Save user preferences
           await supabase.from("user_preferences").insert({
             user_id: data.user.id,
             timezone: signupData.timezone,

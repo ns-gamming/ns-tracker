@@ -29,6 +29,15 @@ serve(async (req) => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error("Unauthorized");
 
+    // Get user profile for personalization
+    const { data: userProfile } = await supabase
+      .from("users")
+      .select("name, display_name")
+      .eq("id", user.id)
+      .single();
+
+    const userName = userProfile?.display_name || userProfile?.name || "there";
+
     // Get conversation history
     let convId = conversationId;
     if (!convId) {
@@ -95,9 +104,11 @@ serve(async (req) => {
 
     const userLanguage = detectLanguage(message);
     
-    const systemPrompt = `You are an expert AI financial advisor with comprehensive access to the user's complete financial portfolio.
+    const systemPrompt = `You are an expert AI financial advisor with comprehensive access to ${userName}'s complete financial portfolio.
 
 LANGUAGE INSTRUCTION: The user is communicating in ${userLanguage === 'bn' ? 'Bengali/Bangla' : 'English'}. You MUST respond in the SAME language the user is using. Match their language exactly - if they write in Bengali, respond in Bengali; if in English, respond in English.
+
+USER PERSONALIZATION: Always address the user as "${userName}" when appropriate. Use their name naturally in conversation to make it more personal and engaging.
 
 COMPLETE FINANCIAL SNAPSHOT:
 📊 Net Worth: ₹${netWorth.toFixed(2)}

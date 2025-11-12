@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,15 +18,37 @@ interface FinancialChatbotProps {
 }
 
 export const FinancialChatbot = ({ open, onOpenChange }: FinancialChatbotProps) => {
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      role: "assistant",
-      content: "Hello! I'm your financial advisor AI. I can help you analyze your spending, set budgets, and improve your financial health. What would you like to know?",
-    },
-  ]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [conversationId, setConversationId] = useState<string | null>(null);
+  const [initialized, setInitialized] = useState(false);
+
+  // Load user's name for personalized greeting
+  useEffect(() => {
+    const loadUserName = async () => {
+      if (!open || initialized) return;
+      
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { data: userProfile } = await supabase
+        .from("users")
+        .select("name, display_name")
+        .eq("id", user.id)
+        .single();
+
+      const userName = userProfile?.display_name || userProfile?.name || "there";
+      
+      setMessages([{
+        role: "assistant",
+        content: `Hello ${userName}! I'm your financial advisor AI. I can help you analyze your spending, set budgets, and improve your financial health. What would you like to know?`,
+      }]);
+      setInitialized(true);
+    };
+
+    loadUserName();
+  }, [open, initialized]);
 
   const sendMessage = async () => {
     if (!input.trim() || loading) return;
