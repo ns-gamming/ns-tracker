@@ -11,7 +11,7 @@
 ---
 
 ## 🚀 Live Preview
-**Website:** https://ns-finsight.vercel.app/
+**Website:** [NS FINSIGHT/](https://www.nsfinsight.xyz)
 
 ---
 
