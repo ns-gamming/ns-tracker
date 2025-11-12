@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
 import { User } from "@supabase/supabase-js";
-import { TrendingUp, LogOut, Plus, Moon, Sun, RefreshCw, MessageSquare, Users, Link as LinkIcon, Shield, Keyboard } from "lucide-react";
+import { TrendingUp, LogOut, Plus, Moon, Sun, RefreshCw, MessageSquare, Users, Link as LinkIcon, Shield, Keyboard, Tag } from "lucide-react";
 import logoImage from "../assets/ns-finsight-logo.png";
 import { AddTransactionDialog } from "@/components/AddTransactionDialog";
 import { FloatingActionButton } from "@/components/FloatingActionButton";
@@ -259,10 +259,6 @@ const Dashboard = () => {
             </div>
 
             <div className="mb-8">
-              <CategoryManager />
-            </div>
-
-            <div className="mb-8">
               <Achievements />
             </div>
 
@@ -327,6 +323,10 @@ const Dashboard = () => {
                 <Button variant="outline" className="gap-2 hover-glow hover:scale-110 transition-all duration-300" onClick={() => navigate("/family")}>
                   <Users className="h-4 w-4" />
                   Manage Family
+                </Button>
+                <Button variant="outline" className="gap-2 hover-glow hover:scale-110 transition-all duration-300" onClick={() => navigate("/categories")}>
+                  <Tag className="h-4 w-4" />
+                  Manage Categories
                 </Button>
                   <Button variant="outline" className="gap-2 hover-glow hover:scale-110 transition-all duration-300" onClick={() => setShowShortcuts(true)}>
                     <Keyboard className="h-4 w-4" />

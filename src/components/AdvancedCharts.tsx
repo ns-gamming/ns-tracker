@@ -340,40 +340,60 @@ export const AdvancedCharts = ({ monthlyTrend = [], categoryBreakdown = [], dail
               <CardContent>
                 <ResponsiveContainer width="100%" height={350}>
                   <LineChart data={comparisonData}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                    <XAxis dataKey="month" stroke="hsl(var(--muted-foreground))" />
-                    <YAxis stroke="hsl(var(--muted-foreground))" />
-                    <Tooltip 
-                      contentStyle={{ 
-                        backgroundColor: 'hsl(var(--popover))', 
-                        border: '1px solid hsl(var(--border))',
-                        borderRadius: '8px'
-                      }} 
+                    <defs>
+                      <linearGradient id="lineIncomeGradient" x1="0" y1="0" x2="1" y2="0">
+                        <stop offset="0%" stopColor="#10b981" />
+                        <stop offset="100%" stopColor="#34d399" />
+                      </linearGradient>
+                      <linearGradient id="lineExpenseGradient" x1="0" y1="0" x2="1" y2="0">
+                        <stop offset="0%" stopColor="#ef4444" />
+                        <stop offset="100%" stopColor="#f87171" />
+                      </linearGradient>
+                      <linearGradient id="lineSavingsGradient" x1="0" y1="0" x2="1" y2="0">
+                        <stop offset="0%" stopColor="#3b82f6" />
+                        <stop offset="100%" stopColor="#60a5fa" />
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid strokeDasharray="3 3" opacity={0.15} stroke="hsl(var(--border))" />
+                    <XAxis dataKey="month" tick={{ fontSize: 12, fill: "hsl(var(--muted-foreground))" }} />
+                    <YAxis tick={{ fontSize: 12, fill: "hsl(var(--muted-foreground))" }} />
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: "hsl(var(--card))",
+                        border: "1px solid hsl(var(--border))",
+                        borderRadius: "12px",
+                        boxShadow: "0 8px 24px rgba(0,0,0,0.15)",
+                      }}
                     />
-                    <Legend />
+                    <Legend wrapperStyle={{ paddingTop: "20px" }} />
                     <Line 
                       type="monotone" 
                       dataKey="income" 
-                      stroke="hsl(var(--success))" 
-                      strokeWidth={3}
-                      dot={{ fill: 'hsl(var(--success))', r: 5 }}
-                      animationDuration={800}
+                      stroke="url(#lineIncomeGradient)" 
+                      strokeWidth={3} 
+                      dot={{ r: 5, fill: "#10b981" }} 
+                      activeDot={{ r: 7 }} 
+                      animationDuration={1200} 
                     />
                     <Line 
                       type="monotone" 
                       dataKey="expenses" 
-                      stroke="hsl(var(--destructive))" 
-                      strokeWidth={3}
-                      dot={{ fill: 'hsl(var(--destructive))', r: 5 }}
-                      animationDuration={1000}
+                      stroke="url(#lineExpenseGradient)" 
+                      strokeWidth={3} 
+                      dot={{ r: 5, fill: "#ef4444" }} 
+                      activeDot={{ r: 7 }} 
+                      animationDuration={1200} 
+                      animationBegin={200} 
                     />
                     <Line 
                       type="monotone" 
                       dataKey="savings" 
-                      stroke="hsl(var(--primary))" 
-                      strokeWidth={3}
-                      dot={{ fill: 'hsl(var(--primary))', r: 5 }}
-                      animationDuration={1200}
+                      stroke="url(#lineSavingsGradient)" 
+                      strokeWidth={3} 
+                      dot={{ r: 5, fill: "#3b82f6" }} 
+                      activeDot={{ r: 7 }} 
+                      animationDuration={1200} 
+                      animationBegin={400} 
                     />
                   </LineChart>
                 </ResponsiveContainer>
@@ -388,19 +408,30 @@ export const AdvancedCharts = ({ monthlyTrend = [], categoryBreakdown = [], dail
               <CardContent>
                 <ResponsiveContainer width="100%" height={350}>
                   <BarChart data={weeklyTrend}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                    <XAxis dataKey="day" stroke="hsl(var(--muted-foreground))" />
-                    <YAxis stroke="hsl(var(--muted-foreground))" />
-                    <Tooltip 
-                      contentStyle={{ 
-                        backgroundColor: 'hsl(var(--popover))', 
-                        border: '1px solid hsl(var(--border))',
-                        borderRadius: '8px'
-                      }} 
+                    <defs>
+                      <linearGradient id="incomeGradient" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#10b981" stopOpacity={0.9}/>
+                        <stop offset="100%" stopColor="#10b981" stopOpacity={0.4}/>
+                      </linearGradient>
+                      <linearGradient id="expenseGradient" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#ef4444" stopOpacity={0.9}/>
+                        <stop offset="100%" stopColor="#ef4444" stopOpacity={0.4}/>
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid strokeDasharray="3 3" opacity={0.15} stroke="hsl(var(--border))" />
+                    <XAxis dataKey="day" tick={{ fontSize: 12, fill: "hsl(var(--muted-foreground))" }} />
+                    <YAxis tick={{ fontSize: 12, fill: "hsl(var(--muted-foreground))" }} />
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: "hsl(var(--card))",
+                        border: "1px solid hsl(var(--border))",
+                        borderRadius: "12px",
+                        boxShadow: "0 8px 24px rgba(0,0,0,0.15)",
+                      }}
                     />
-                    <Legend />
-                    <Bar dataKey="income" stackId="a" fill="hsl(var(--success))" radius={[0, 0, 0, 0]} animationDuration={800} />
-                    <Bar dataKey="expense" stackId="a" fill="hsl(var(--destructive))" radius={[8, 8, 0, 0]} animationDuration={1000} />
+                    <Legend wrapperStyle={{ paddingTop: "20px" }} />
+                    <Bar dataKey="income" stackId="a" fill="url(#incomeGradient)" radius={[0, 0, 0, 0]} animationDuration={800} />
+                    <Bar dataKey="expense" stackId="a" fill="url(#expenseGradient)" radius={[8, 8, 0, 0]} animationDuration={1000} />
                   </BarChart>
                 </ResponsiveContainer>
               </CardContent>

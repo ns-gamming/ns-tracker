@@ -10,6 +10,7 @@ import Dashboard from "./pages/Dashboard";
 import Privacy from "./pages/Privacy";
 import Family from "./pages/Family";
 import FamilyMemberDashboard from "./pages/FamilyMemberDashboard";
+import Categories from "./pages/Categories";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -64,6 +65,7 @@ const App = () => (
             <Route path="/family" element={<Family />} />
             <Route path="/family/:memberId/dashboard" element={<FamilyMemberDashboard />} />
             <Route path="/privacy" element={<Privacy />} />
+            <Route path="/categories" element={<Categories />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
