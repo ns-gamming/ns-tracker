@@ -8,6 +8,8 @@ import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import Privacy from "./pages/Privacy";
+import Terms from "./pages/Terms";
+import Error from "./pages/Error";
 import Family from "./pages/Family";
 import FamilyMemberDashboard from "./pages/FamilyMemberDashboard";
 import Categories from "./pages/Categories";
@@ -65,6 +67,8 @@ const App = () => (
             <Route path="/family" element={<Family />} />
             <Route path="/family/:memberId/dashboard" element={<FamilyMemberDashboard />} />
             <Route path="/privacy" element={<Privacy />} />
+            <Route path="/terms" element={<Terms />} />
+            <Route path="/error" element={<Error />} />
             <Route path="/categories" element={<Categories />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />

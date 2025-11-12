@@ -579,7 +579,16 @@ const Index = () => {
                     Privacy Policy
                   </Button>
                 </li>
-                <li className="hover:text-foreground transition-colors cursor-pointer">Terms of Service</li>
+                <li>
+                  <Button 
+                    variant="link" 
+                    onClick={() => navigate("/terms")} 
+                    className="p-0 h-auto text-sm text-muted-foreground hover:text-foreground"
+                    data-testid="link-terms-footer"
+                  >
+                    Terms of Service
+                  </Button>
+                </li>
                 <li className="hover:text-foreground transition-colors cursor-pointer">Cookie Policy</li>
                 <li className="hover:text-foreground transition-colors cursor-pointer">Disclaimer</li>
               </ul>

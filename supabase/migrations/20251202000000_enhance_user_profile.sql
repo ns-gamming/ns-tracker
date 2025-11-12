@@ -24,8 +24,11 @@ ADD COLUMN IF NOT EXISTS dashboard_preferences JSONB DEFAULT '{
 CREATE INDEX IF NOT EXISTS idx_users_name ON public.users(name);
 CREATE INDEX IF NOT EXISTS idx_users_dashboard_prefs ON public.users USING gin(dashboard_preferences);
 
+-- Drop existing policy if it exists, then create new one
+DROP POLICY IF EXISTS "Users can update own preferences" ON public.users;
+
 -- Update RLS policies to ensure users can update their own preferences
-CREATE POLICY IF NOT EXISTS "Users can update own preferences"
+CREATE POLICY "Users can update own preferences"
 ON public.users FOR UPDATE
 TO authenticated
 USING (auth.uid() = id)
