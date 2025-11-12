@@ -42,6 +42,7 @@ import { WalletManagement } from "@/components/WalletManagement";
 import { UnifiedAssetDialog } from "@/components/UnifiedAssetDialog";
 import { RealTimeAlerts } from "@/components/RealTimeAlerts";
 import { CategoryManager } from "@/components/CategoryManager";
+import { DataManagement } from "@/components/DataManagement"; // Assuming DataManagement component is added
 
 const Dashboard = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -142,9 +143,9 @@ const Dashboard = () => {
               <div className="relative h-12 w-12 flex-shrink-0">
                 <div className="absolute inset-0 bg-primary/30 rounded-full blur-md animate-ripple"></div>
                 <div className="h-full w-full rounded-full overflow-hidden bg-white shadow-lg ring-2 ring-primary/40 relative z-10 hover-glow">
-                  <img 
-                    src={logoImage} 
-                    alt="NS FinSight Logo" 
+                  <img
+                    src={logoImage}
+                    alt="NS FinSight Logo"
                     className="h-full w-full object-contain p-1 transition-transform duration-300 hover:scale-110"
                     loading="eager"
                     onError={(e) => {
@@ -218,11 +219,9 @@ const Dashboard = () => {
                 <div className="opacity-0 animate-card-entrance card-shine" style={{ animationDelay: "0.3s", animationFillMode: "forwards" }}>
                   <SmartAlerts />
                 </div>
-                <div className="opacity-0 animate-card-entrance card-shine" style={{ animationDelay: "0.4s", animationFillMode: "forwards" }}>
+                <div className="lg:col-span-1 space-y-6">
                   <BudgetAlerts />
-                </div>
-                <div className="opacity-0 animate-card-entrance card-shine" style={{ animationDelay: "0.5s", animationFillMode: "forwards" }}>
-                  <BillReminders />
+                  <DataManagement />
                 </div>
               </div>
               <div className="space-y-6">
