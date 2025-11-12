@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -5,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
 import { User } from "@supabase/supabase-js";
-import { TrendingUp, LogOut, Plus, Moon, Sun, RefreshCw, MessageSquare, Users, Link as LinkIcon, Shield, Keyboard, Tag } from "lucide-react";
+import { TrendingUp, LogOut, Plus, Moon, Sun, RefreshCw, MessageSquare, Users, Link as LinkIcon, Shield, Keyboard, Tag, Settings, Maximize2, Minimize2 } from "lucide-react";
 import logoImage from "../assets/ns-finsight-logo.png";
 import { AddTransactionDialog } from "@/components/AddTransactionDialog";
 import { FloatingActionButton } from "@/components/FloatingActionButton";
@@ -42,7 +43,12 @@ import { WalletManagement } from "@/components/WalletManagement";
 import { UnifiedAssetDialog } from "@/components/UnifiedAssetDialog";
 import { RealTimeAlerts } from "@/components/RealTimeAlerts";
 import { CategoryManager } from "@/components/CategoryManager";
-import { DataManagement } from "@/components/DataManagement"; // Assuming DataManagement component is added
+import { DataManagement } from "@/components/DataManagement";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+
+type ChartComplexity = "simple" | "intermediate" | "advanced" | "expert";
 
 const Dashboard = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -53,6 +59,8 @@ const Dashboard = () => {
   const [showShortcuts, setShowShortcuts] = useState(false);
   const [showAssetDialog, setShowAssetDialog] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
+  const [chartComplexity, setChartComplexity] = useState<ChartComplexity>("simple");
+  const [showSettings, setShowSettings] = useState(false);
   const navigate = useNavigate();
   const { data: dashboardData, isLoading, refetch } = useDashboardData();
 
@@ -64,7 +72,6 @@ const Dashboard = () => {
     toast.success(`${newTheme === "dark" ? "Dark" : "Light"} mode enabled`);
   };
 
-  // Keyboard shortcuts
   useKeyboardShortcuts([
     { key: 'n', ctrlKey: true, action: () => setShowAddTransaction(true), description: 'Add transaction' },
     { key: 'b', ctrlKey: true, action: () => setShowBudgetDialog(true), description: 'Set budget' },
@@ -73,9 +80,9 @@ const Dashboard = () => {
     { key: 'r', ctrlKey: true, action: () => refetch(), description: 'Refresh data' },
     { key: 'd', ctrlKey: true, action: toggleTheme, description: 'Toggle theme' },
     { key: '/', ctrlKey: true, action: () => setShowShortcuts(true), description: 'Show shortcuts' },
+    { key: 's', ctrlKey: true, action: () => setShowSettings(!showSettings), description: 'Toggle settings' },
   ]);
 
-  // Real-time updates for transactions
   useRealtimeUpdates({
     table: 'transactions',
     onInsert: () => refetch(),
@@ -85,13 +92,13 @@ const Dashboard = () => {
   });
 
   useEffect(() => {
-    // Check authentication
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (!session) {
         navigate("/auth");
       } else {
         setUser(session.user);
-        setTimeout(() => setInitialLoading(false), 1000); // Small delay for smooth transition
+        loadUserPreferences(session.user.id);
+        setTimeout(() => setInitialLoading(false), 1000);
       }
     });
 
@@ -103,13 +110,46 @@ const Dashboard = () => {
       }
     });
 
-    // Load theme preference
     const savedTheme = localStorage.getItem("theme") as "light" | "dark" || "light";
     setTheme(savedTheme);
     document.documentElement.classList.toggle("dark", savedTheme === "dark");
 
     return () => subscription.unsubscribe();
   }, [navigate]);
+
+  const loadUserPreferences = async (userId: string) => {
+    const { data } = await supabase
+      .from("users")
+      .select("dashboard_preferences")
+      .eq("id", userId)
+      .single();
+
+    if (data?.dashboard_preferences) {
+      setChartComplexity(data.dashboard_preferences.chartComplexity || "simple");
+    }
+  };
+
+  const saveChartComplexity = async (complexity: ChartComplexity) => {
+    if (!user) return;
+    
+    setChartComplexity(complexity);
+    
+    const { error } = await supabase
+      .from("users")
+      .update({
+        dashboard_preferences: {
+          chartComplexity: complexity,
+          showAnimations: true,
+        }
+      })
+      .eq("id", user.id);
+
+    if (error) {
+      toast.error("Failed to save preferences");
+    } else {
+      toast.success("Chart complexity updated");
+    }
+  };
 
   const handleSignOut = async () => {
     const { error } = await supabase.auth.signOut();
@@ -128,7 +168,6 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
-      {/* Animated Background */}
       <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
         <div className="absolute top-0 -left-20 w-96 h-96 bg-primary/8 rounded-full blur-3xl animate-floating-smooth"></div>
         <div className="absolute bottom-0 -right-20 w-96 h-96 bg-success/8 rounded-full blur-3xl animate-floating-smooth animate-morph" style={{ animationDelay: "2s" }}></div>
@@ -143,16 +182,7 @@ const Dashboard = () => {
               <div className="relative h-12 w-12 flex-shrink-0">
                 <div className="absolute inset-0 bg-primary/30 rounded-full blur-md animate-ripple"></div>
                 <div className="h-full w-full rounded-full overflow-hidden bg-white shadow-lg ring-2 ring-primary/40 relative z-10 hover-glow">
-                  <img
-                    src={logoImage}
-                    alt="NS FinSight Logo"
-                    className="h-full w-full object-contain p-1 transition-transform duration-300 hover:scale-110"
-                    loading="eager"
-                    onError={(e) => {
-                      console.error('Logo failed to load');
-                      e.currentTarget.style.display = 'none';
-                    }}
-                  />
+                  <img src={logoImage} alt="NS FinSight Logo" className="h-full w-full object-contain p-1 transition-transform duration-300 hover:scale-110" loading="eager" />
                 </div>
               </div>
               <span className="text-xl font-bold bg-gradient-to-r from-primary via-primary/90 to-success bg-clip-text text-transparent animate-gradient-shift bg-[length:200%_auto] hover:scale-105 transition-transform">
@@ -160,6 +190,9 @@ const Dashboard = () => {
               </span>
             </div>
             <div className="flex items-center gap-2">
+              <Button variant="ghost" size="icon" onClick={() => setShowSettings(!showSettings)} title="Dashboard Settings" className="hover-glow hover:scale-110 transition-all duration-300">
+                <Settings className="h-5 w-5" />
+              </Button>
               <Button variant="ghost" size="icon" onClick={() => setShowChatbot(true)} title="AI Financial Advisor" className="hover-glow hover:scale-110 transition-all duration-300">
                 <MessageSquare className="h-5 w-5" />
               </Button>
@@ -182,6 +215,60 @@ const Dashboard = () => {
       </header>
 
       <main className="container mx-auto px-3 sm:px-4 py-4 sm:py-8 relative z-10">
+        {showSettings && (
+          <Card className="mb-6 glass-morphism border-primary/20 animate-slide-in-up">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Settings className="w-5 h-5" />
+                Dashboard Customization
+              </CardTitle>
+              <CardDescription>Control chart complexity and visualization options</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="complexity">Chart Complexity Level</Label>
+                <Select value={chartComplexity} onValueChange={(value: ChartComplexity) => saveChartComplexity(value)}>
+                  <SelectTrigger id="complexity">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="simple">
+                      <div className="flex items-center gap-2">
+                        <Minimize2 className="w-4 h-4" />
+                        <span>Simple - Basic charts only</span>
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="intermediate">
+                      <div className="flex items-center gap-2">
+                        <TrendingUp className="w-4 h-4" />
+                        <span>Intermediate - Standard analytics</span>
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="advanced">
+                      <div className="flex items-center gap-2">
+                        <Maximize2 className="w-4 h-4" />
+                        <span>Advanced - Detailed insights</span>
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="expert">
+                      <div className="flex items-center gap-2">
+                        <Maximize2 className="w-4 h-4" />
+                        <span>Expert - Maximum customization</span>
+                      </div>
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+                <p className="text-xs text-muted-foreground">
+                  {chartComplexity === "simple" && "Shows only essential charts with minimal options"}
+                  {chartComplexity === "intermediate" && "Includes standard analytics with moderate customization"}
+                  {chartComplexity === "advanced" && "Displays comprehensive charts with detailed controls"}
+                  {chartComplexity === "expert" && "Full suite of visualizations with maximum customization"}
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         <div className="mb-6 sm:mb-8 flex items-center justify-between animate-card-entrance">
           <div>
             <h2 className="text-2xl sm:text-3xl font-bold mb-1 sm:mb-2 bg-gradient-to-r from-foreground via-primary to-foreground/70 bg-clip-text text-transparent bg-[length:200%_auto] animate-gradient-shift">Welcome back!</h2>
@@ -219,9 +306,34 @@ const Dashboard = () => {
                 <div className="opacity-0 animate-card-entrance card-shine" style={{ animationDelay: "0.3s", animationFillMode: "forwards" }}>
                   <SmartAlerts />
                 </div>
-                <div className="lg:col-span-1 space-y-6">
-                  <BudgetAlerts />
-                  <DataManagement />
+              </div>
+              <div className="space-y-6">
+                <BudgetAlerts />
+                <DataManagement />
+              </div>
+            </div>
+
+            <div className="grid gap-6 lg:grid-cols-3 mb-8">
+              <div className="lg:col-span-2 space-y-6">
+                <div className="opacity-0 animate-card-entrance card-shine" style={{ animationDelay: "0.4s", animationFillMode: "forwards" }}>
+                  {chartComplexity === "expert" && (
+                    <EnhancedFinancialCharts
+                      monthlyTrend={dashboardData?.monthlyTrend}
+                      categoryBreakdown={dashboardData?.categoryBreakdown}
+                    />
+                  )}
+                  {(chartComplexity === "advanced" || chartComplexity === "intermediate") && (
+                    <AdvancedCharts
+                      monthlyTrend={dashboardData?.monthlyTrend}
+                      categoryBreakdown={dashboardData?.categoryBreakdown}
+                    />
+                  )}
+                  {chartComplexity === "simple" && (
+                    <AdvancedCharts
+                      monthlyTrend={dashboardData?.monthlyTrend}
+                      categoryBreakdown={dashboardData?.categoryBreakdown}
+                    />
+                  )}
                 </div>
               </div>
               <div className="space-y-6">
@@ -231,24 +343,22 @@ const Dashboard = () => {
               </div>
             </div>
 
-            <div className="mb-8 opacity-0 animate-card-entrance card-shine perspective-card" style={{ animationDelay: "0.6s", animationFillMode: "forwards" }}>
-              <AnalyticsDashboard />
-            </div>
+            {(chartComplexity === "advanced" || chartComplexity === "expert") && (
+              <div className="mb-8 opacity-0 animate-card-entrance card-shine perspective-card" style={{ animationDelay: "0.6s", animationFillMode: "forwards" }}>
+                <AnalyticsDashboard />
+              </div>
+            )}
 
             <div className="mb-8 opacity-0 animate-card-entrance card-shine" style={{ animationDelay: "0.7s", animationFillMode: "forwards" }}>
               <WalletManagement />
             </div>
 
             <div className="grid gap-6 lg:grid-cols-2 mb-8">
-              <div className="opacity-0 animate-card-entrance card-shine perspective-card" style={{ animationDelay: "0.8s", animationFillMode: "forwards" }}>
-                <AdvancedCharts
-                  monthlyTrend={dashboardData?.monthlyTrend}
-                  categoryBreakdown={dashboardData?.categoryBreakdown}
-                />
+              <div className="opacity-0 animate-card-entrance card-shine" style={{ animationDelay: "0.9s", animationFillMode: "forwards" }}>
+                <FamilyOverview items={dashboardData?.familySummary || []} />
               </div>
               <div className="opacity-0 animate-card-entrance card-shine" style={{ animationDelay: "0.9s", animationFillMode: "forwards" }}>
-                {/* @ts-ignore - runtime data shape enforced */}
-                <FamilyOverview items={dashboardData?.familySummary || []} />
+                <BillReminders />
               </div>
             </div>
 
@@ -327,10 +437,10 @@ const Dashboard = () => {
                   <Tag className="h-4 w-4" />
                   Manage Categories
                 </Button>
-                  <Button variant="outline" className="gap-2 hover-glow hover:scale-110 transition-all duration-300" onClick={() => setShowShortcuts(true)}>
-                    <Keyboard className="h-4 w-4" />
-                    Keyboard Shortcuts
-                  </Button>
+                <Button variant="outline" className="gap-2 hover-glow hover:scale-110 transition-all duration-300" onClick={() => setShowShortcuts(true)}>
+                  <Keyboard className="h-4 w-4" />
+                  Keyboard Shortcuts
+                </Button>
               </CardContent>
             </Card>
           </>
@@ -364,7 +474,6 @@ const Dashboard = () => {
           onOpenChange={setShowShortcuts}
         />
 
-        {/* Floating Action Button for quick transaction add */}
         <FloatingActionButton onClick={() => setShowAddTransaction(true)} />
       </main>
     </div>

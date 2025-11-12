@@ -16,10 +16,11 @@ import authBg from "@assets/stock_images/modern_abstract_grad_aebdcbb0.jpg";
 const Auth = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
+  const [name, setName] = useState("");
+  const [isLogin, setIsLogin] = useState(true);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  
+
   const [signupData, setSignupData] = useState({
     firstName: "",
     lastName: "",
@@ -68,7 +69,7 @@ const Auth = () => {
       return;
     }
     setLoading(true);
-    
+
     try {
       const { data, error } = await supabase.auth.signUp({
         email,
@@ -87,7 +88,7 @@ const Auth = () => {
           },
         },
       });
-      
+
       if (error) {
         toast.error(error.message);
       } else {
@@ -103,7 +104,7 @@ const Auth = () => {
             console.error("Error saving user preferences:", err);
           });
         }
-        
+
         toast.success("Account created successfully! Please check your email to verify your account.", {
           duration: 5000
         });
@@ -140,9 +141,9 @@ const Auth = () => {
     <div className="min-h-screen relative overflow-hidden flex items-center justify-center p-4">
       {/* Background Image with Overlay */}
       <div className="absolute inset-0 z-0">
-        <img 
-          src={authBg} 
-          alt="Background" 
+        <img
+          src={authBg}
+          alt="Background"
           className="w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-br from-background/95 via-primary/10 to-background/90"></div>
@@ -179,9 +180,9 @@ const Auth = () => {
             <div className="relative h-20 w-20 flex-shrink-0">
               <div className="absolute inset-0 bg-primary/20 rounded-full blur-xl animate-pulse"></div>
               <div className="h-full w-full rounded-full overflow-hidden bg-white shadow-2xl relative z-10 hover-scale ring-4 ring-primary/30">
-                <img 
-                  src={logoImage} 
-                  alt="NS FinSight" 
+                <img
+                  src={logoImage}
+                  alt="NS FinSight"
                   className="h-full w-full object-contain p-2"
                   loading="eager"
                 />
@@ -200,7 +201,7 @@ const Auth = () => {
           {/* Feature Cards */}
           <div className="space-y-6">
             {features.map((feature, index) => (
-              <div 
+              <div
                 key={index}
                 className="flex gap-4 p-6 rounded-2xl bg-card/50 backdrop-blur-xl border border-border/50 hover:shadow-2xl hover:scale-105 transition-all duration-300 animate-fade-in-up group"
                 style={{ animationDelay: `${index * 0.1}s` }}
@@ -254,7 +255,7 @@ const Auth = () => {
                 <Sparkles className="w-3 h-3 mr-2" />
                 Join 10,000+ Smart Investors
               </div>
-              
+
               <CardTitle className="text-3xl font-bold">Welcome</CardTitle>
               <CardDescription className="text-base">
                 Sign in to your account or create a new one
@@ -264,17 +265,19 @@ const Auth = () => {
             <CardContent className="pb-8">
               <Tabs defaultValue="signin" className="w-full">
                 <TabsList className="grid w-full grid-cols-2 mb-8 p-1 bg-muted/50">
-                  <TabsTrigger 
-                    value="signin" 
+                  <TabsTrigger
+                    value="signin"
                     className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground transition-all"
                     data-testid="tab-signin"
+                    onClick={() => setIsLogin(true)}
                   >
                     Sign In
                   </TabsTrigger>
-                  <TabsTrigger 
-                    value="signup" 
+                  <TabsTrigger
+                    value="signup"
                     className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground transition-all"
                     data-testid="tab-signup"
+                    onClick={() => setIsLogin(false)}
                   >
                     Sign Up
                   </TabsTrigger>
@@ -284,13 +287,13 @@ const Auth = () => {
                   <form onSubmit={handleSignIn} className="space-y-5">
                     <div className="space-y-2">
                       <Label htmlFor="email-signin" className="text-sm font-medium">Email Address</Label>
-                      <Input 
-                        id="email-signin" 
-                        type="email" 
+                      <Input
+                        id="email-signin"
+                        type="email"
                         placeholder="you@example.com"
-                        value={email} 
-                        onChange={(e) => setEmail(e.target.value)} 
-                        required 
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
                         className="h-12 bg-background/50 border-border/50 focus:border-primary transition-colors"
                         data-testid="input-email-signin"
                       />
@@ -298,13 +301,13 @@ const Auth = () => {
                     <div className="space-y-2">
                       <Label htmlFor="password-signin" className="text-sm font-medium">Password</Label>
                       <div className="relative">
-                        <Input 
-                          id="password-signin" 
+                        <Input
+                          id="password-signin"
                           type={showPassword ? "text" : "password"}
                           placeholder="Enter your password"
-                          value={password} 
-                          onChange={(e) => setPassword(e.target.value)} 
-                          required 
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          required
                           className="h-12 bg-background/50 border-border/50 focus:border-primary transition-colors pr-12"
                           data-testid="input-password-signin"
                         />
@@ -318,9 +321,9 @@ const Auth = () => {
                         </button>
                       </div>
                     </div>
-                    <Button 
-                      type="submit" 
-                      className="w-full h-12 text-base font-semibold bg-gradient-to-r from-primary to-primary/80 hover:shadow-xl transition-all" 
+                    <Button
+                      type="submit"
+                      className="w-full h-12 text-base font-semibold bg-gradient-to-r from-primary to-primary/80 hover:shadow-xl transition-all"
                       disabled={loading}
                       data-testid="button-signin"
                     >
@@ -337,7 +340,7 @@ const Auth = () => {
                       )}
                     </Button>
                   </form>
-                  
+
                   <div className="mt-6 text-center">
                     <p className="text-sm text-muted-foreground flex items-center justify-center gap-2">
                       <Zap className="w-4 h-4 text-warning" />
@@ -354,57 +357,57 @@ const Auth = () => {
                           <User className="w-3 h-3" />
                           First Name
                         </Label>
-                        <Input 
-                          id="firstName" 
-                          type="text" 
+                        <Input
+                          id="firstName"
+                          type="text"
                           placeholder="John"
-                          value={signupData.firstName} 
-                          onChange={(e) => setSignupData({ ...signupData, firstName: e.target.value })} 
-                          required 
+                          value={signupData.firstName}
+                          onChange={(e) => setSignupData({ ...signupData, firstName: e.target.value })}
+                          required
                           className="h-11 bg-background/50 border-border/50 focus:border-primary transition-all video-smooth"
                           data-testid="input-firstname-signup"
                         />
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="lastName" className="text-sm font-medium">Last Name</Label>
-                        <Input 
-                          id="lastName" 
-                          type="text" 
+                        <Input
+                          id="lastName"
+                          type="text"
                           placeholder="Doe"
-                          value={signupData.lastName} 
-                          onChange={(e) => setSignupData({ ...signupData, lastName: e.target.value })} 
-                          required 
+                          value={signupData.lastName}
+                          onChange={(e) => setSignupData({ ...signupData, lastName: e.target.value })}
+                          required
                           className="h-11 bg-background/50 border-border/50 focus:border-primary transition-all video-smooth"
                           data-testid="input-lastname-signup"
                         />
                       </div>
                     </div>
-                    
+
                     <div className="space-y-2">
                       <Label htmlFor="email-signup" className="text-sm font-medium">Email Address</Label>
-                      <Input 
-                        id="email-signup" 
-                        type="email" 
+                      <Input
+                        id="email-signup"
+                        type="email"
                         placeholder="you@example.com"
-                        value={email} 
-                        onChange={(e) => setEmail(e.target.value)} 
-                        required 
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
                         className="h-11 bg-background/50 border-border/50 focus:border-primary transition-all video-smooth"
                         data-testid="input-email-signup"
                       />
                     </div>
-                    
+
                     <div className="space-y-2">
                       <Label htmlFor="password-signup" className="text-sm font-medium">Password</Label>
                       <div className="relative">
-                        <Input 
-                          id="password-signup" 
+                        <Input
+                          id="password-signup"
                           type={showPassword ? "text" : "password"}
                           placeholder="Create a strong password"
-                          value={password} 
-                          onChange={(e) => setPassword(e.target.value)} 
-                          required 
-                          minLength={6} 
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          required
+                          minLength={6}
                           className="h-11 bg-background/50 border-border/50 focus:border-primary transition-all video-smooth pr-12"
                           data-testid="input-password-signup"
                         />
@@ -476,28 +479,28 @@ const Auth = () => {
                       </Label>
                       <div className="grid grid-cols-2 gap-2">
                         <label className="flex items-center gap-2 cursor-pointer hover:bg-primary/5 p-2 rounded transition-colors">
-                          <Checkbox 
+                          <Checkbox
                             checked={signupData.goals.savings}
                             onCheckedChange={(checked) => setSignupData({ ...signupData, goals: { ...signupData.goals, savings: !!checked } })}
                           />
                           <span className="text-sm">Savings</span>
                         </label>
                         <label className="flex items-center gap-2 cursor-pointer hover:bg-primary/5 p-2 rounded transition-colors">
-                          <Checkbox 
+                          <Checkbox
                             checked={signupData.goals.investment}
                             onCheckedChange={(checked) => setSignupData({ ...signupData, goals: { ...signupData.goals, investment: !!checked } })}
                           />
                           <span className="text-sm">Investment</span>
                         </label>
                         <label className="flex items-center gap-2 cursor-pointer hover:bg-primary/5 p-2 rounded transition-colors">
-                          <Checkbox 
+                          <Checkbox
                             checked={signupData.goals.budgeting}
                             onCheckedChange={(checked) => setSignupData({ ...signupData, goals: { ...signupData.goals, budgeting: !!checked } })}
                           />
                           <span className="text-sm">Budgeting</span>
                         </label>
                         <label className="flex items-center gap-2 cursor-pointer hover:bg-primary/5 p-2 rounded transition-colors">
-                          <Checkbox 
+                          <Checkbox
                             checked={signupData.goals.debtPayoff}
                             onCheckedChange={(checked) => setSignupData({ ...signupData, goals: { ...signupData.goals, debtPayoff: !!checked } })}
                           />
@@ -506,9 +509,9 @@ const Auth = () => {
                       </div>
                     </div>
 
-                    <Button 
-                      type="submit" 
-                      className="w-full h-12 text-base font-semibold bg-gradient-to-r from-success to-success/80 hover:shadow-xl transition-all video-smooth" 
+                    <Button
+                      type="submit"
+                      className="w-full h-12 text-base font-semibold bg-gradient-to-r from-success to-success/80 hover:shadow-xl transition-all video-smooth"
                       disabled={loading}
                       data-testid="button-signup"
                     >
@@ -525,12 +528,12 @@ const Auth = () => {
                       )}
                     </Button>
                   </form>
-                  
+
                   <div className="mt-6 text-center">
                     <p className="text-sm text-muted-foreground">
                       By signing up, you agree to our{" "}
-                      <a 
-                        href="/privacy" 
+                      <a
+                        href="/privacy"
                         className="text-primary hover:underline font-medium"
                         data-testid="link-privacy-policy"
                       >
