@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -131,9 +130,9 @@ const Dashboard = () => {
 
   const saveChartComplexity = async (complexity: ChartComplexity) => {
     if (!user) return;
-    
+
     setChartComplexity(complexity);
-    
+
     const { error } = await supabase
       .from("users")
       .update({

@@ -259,8 +259,8 @@ const Index = () => {
       </section>
 
       {/* AdSense Ad Unit - After Hero Section */}
-      <div className="container mx-auto px-4 py-8">
-        <AdSense slot="YOUR_AdSense_Slot_ID_1" /> {/* Replace with your actual AdSense slot ID */}
+      <div className="container mx-auto px-4 py-4 md:py-8">
+        <AdSense slot="1234567890" format="horizontal" className="max-w-4xl mx-auto" />
       </div>
 
       {/* Features Grid */}
@@ -295,8 +295,8 @@ const Index = () => {
       </section>
 
       {/* AdSense Ad Unit - After Features Section */}
-      <div className="container mx-auto px-4 py-8">
-        <AdSense slot="YOUR_AdSense_Slot_ID_2" /> {/* Replace with your actual AdSense slot ID */}
+      <div className="container mx-auto px-4 py-4 md:py-8">
+        <AdSense slot="2345678901" format="auto" className="max-w-6xl mx-auto" />
       </div>
 
       {/* Feature Showcases with Images */}
@@ -407,8 +407,8 @@ const Index = () => {
       </section>
 
       {/* AdSense Ad Unit - After Feature Showcases */}
-      <div className="container mx-auto px-4 py-8">
-        <AdSense slot="YOUR_AdSense_Slot_ID_3" /> {/* Replace with your actual AdSense slot ID */}
+      <div className="container mx-auto px-4 py-4 md:py-8">
+        <AdSense slot="3456789012" format="auto" className="max-w-6xl mx-auto" />
       </div>
 
       {/* Testimonials */}
@@ -517,8 +517,8 @@ const Index = () => {
       </section>
 
       {/* AdSense Ad Unit - Before Footer */}
-      <div className="container mx-auto px-4 py-8">
-        <AdSense slot="YOUR_AdSense_Slot_ID_4" /> {/* Replace with your actual AdSense slot ID */}
+      <div className="container mx-auto px-4 py-4 md:py-8">
+        <AdSense slot="4567890123" format="horizontal" className="max-w-4xl mx-auto" />
       </div>
 
       {/* Footer */}

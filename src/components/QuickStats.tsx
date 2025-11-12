@@ -205,9 +205,9 @@ export const QuickStats = ({
                 </div>
                 <p className="text-sm font-medium text-muted-foreground uppercase tracking-wide">{stat.title}</p>
               </CardHeader>
-              <CardContent>
+              <CardContent className="pt-3 md:pt-4 px-3 md:px-6">
                 <div className="space-y-2">
-                  <div className={`text-4xl font-black tabular-nums ${stat.textColor} group-hover:scale-105 transition-transform origin-left relative`}>
+                  <div className={`text-3xl font-black tabular-nums ${stat.textColor} group-hover:scale-105 transition-transform origin-left relative`}>
                     <span className="relative z-10">
                       {stat.isPercentage
                         ? `${stat.value.toFixed(0)}%`
@@ -261,8 +261,8 @@ export const QuickStats = ({
                 </div>
                 <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">{stat.title}</p>
               </CardHeader>
-              <CardContent>
-                <div className={`text-3xl font-black tabular-nums ${stat.textColor} group-hover:scale-105 transition-transform origin-left relative`}>
+              <CardContent className="pt-3 md:pt-4 px-3 md:px-6">
+                <div className={`text-2xl font-black tabular-nums ${stat.textColor} group-hover:scale-105 transition-transform origin-left relative`}>
                   <span className="relative z-10">
                     {stat.isPercentage
                       ? `${stat.value.toFixed(0)}%`
